@@ -1,18 +1,43 @@
 const express= require('express');
-import cors from "cors";
+// const cors = require("cors");
 require('dotenv').config();
 const mongoose = require('mongoose');
 const {connectmongoDB} = require('./connect');
 const userRoutes = require('./routes/user');
 const app = express();
-app.use(cors({
-  origin: "http://localhost:5173", // allow your local frontend
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+// app.use(cors({
+//   origin: "http://localhost:5173",
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization"]
+// }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// app.use(session({
+//   secret: process.env.SESSION_SECRET,
+//   resave: false,
+//   saveUninitialized: false,
+// }));
+
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+// app.get(
+//   "/auth/google/callback",
+//   passport.authenticate("google", {
+//     successRedirect: "http://localhost:5173/dashboard", // frontend after success
+//     failureRedirect: "http://localhost:5173/login",     // frontend after fail
+//   })
+// );
+
+// // Optional: logout
+// app.get("/auth/logout", (req, res) => {
+//   req.logout(() => {
+//     res.redirect("/");
+//   });
+// });
 
 
 const PORT = process.env.PORT;
