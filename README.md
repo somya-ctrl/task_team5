@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # mind_ease_app
 
 A new Flutter project.
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# task_team5
+>>>>>>> b5b92948d19a9a210b557418cf4c27e827a40dfd
