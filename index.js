@@ -7,9 +7,17 @@ const mongoose = require('mongoose');
 const {connectmongoDB} = require('./connect');
 const userRoutes = require('./routes/user');
 const app = express();
-app.use(cors());
+
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: ["http://localhost:5173"], 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // ✅ allow cookies + auth headers
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
