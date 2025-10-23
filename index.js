@@ -8,7 +8,7 @@ const {connectmongoDB} = require('./connect');
 const userRoutes = require('./routes/user');
 const app = express();
 app.use(cors({
-  origin: ["http://localhost:5173", "https://team5-backend.netlify.app"],
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials:true,
