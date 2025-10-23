@@ -8,11 +8,12 @@ const {connectmongoDB} = require('./connect');
 const userRoutes = require('./routes/user');
 const app = express();
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "https://team5-backend.netlify.app"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials:true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -25,14 +26,17 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.get('/', (req, res) => {
+    res.send('Hello, guys!');
+});
 app.use('/', userRoutes);
 app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    successRedirect: "http://localhost:5173/dashboard", // frontend after success
-    failureRedirect: "http://localhost:5173/login",     // frontend after fail
+    successRedirect: "http://localhost:5173/dashboard",
+    failureRedirect: "http://localhost:5173/login",
   })
 );
 
@@ -50,9 +54,7 @@ const PORT = process.env.PORT;
 
 connectmongoDB(process.env.MONGO_URI);
 
-app.get('/', (req, res) => {
-    res.send('Hello, guys!');
-});
+
 app.listen(PORT ,()=>{
     console.log(`Server is running on port ${PORT}`);
 });
