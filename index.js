@@ -1,8 +1,10 @@
+require('dotenv').config();
+
 const express= require('express');
 const cors = require("cors");
 const session = require("express-session");
 const passport = require("./auth/google");
-require('dotenv').config();
+
 const mongoose = require('mongoose');
 const {connectmongoDB} = require('./connect');
 const userRoutes = require('./routes/user');
