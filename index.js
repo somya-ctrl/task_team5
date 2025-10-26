@@ -1,65 +1,51 @@
-require('dotenv').config();
+require("dotenv").config();
+console.log("startup env -> GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID ? "[set]" : "[missing]");
+console.log("startup env -> GOOGLE_REDIRECT_URI:", process.env.GOOGLE_REDIRECT_URI);
 
-const express= require('express');
+const express = require("express");
 const cors = require("cors");
-const session = require("express-session");
-const passport = require("./auth/google");
+const mongoose = require("mongoose");
+const { connectmongoDB } = require("./connect");
+const userRoutes = require("./routes/user");
+const { getGoogleAuthURL, handleGoogleCallback } = require("./auth/google");
 
-const mongoose = require('mongoose');
-const {connectmongoDB} = require('./connect');
-const userRoutes = require('./routes/user');
 const app = express();
-
 
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173"], 
+    origin: ["http://localhost:5173", "https://mindease-backend.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // ✅ allow cookies + auth headers
+    credentials: true,
   })
 );
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
-
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.get('/', (req, res) => {
-    res.send('Hello, guys!');
-});
-app.use('/', userRoutes);
-app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "http://localhost:5173/dashboard",
-    failureRedirect: "http://localhost:5173/login",
-  })
-);
-
-// Optional: logout
-app.get("/auth/logout", (req, res) => {
-  req.logout(() => {
-    res.redirect("/");
-  });
+app.get("/", (req, res) => {
+  res.send("Hello, guys!");
 });
 
+app.use("/", userRoutes);
 
-const PORT = process.env.PORT;
+// Google OAuth endpoints
+app.get("/auth/google", getGoogleAuthURL);
+app.get("/auth/google/callback", handleGoogleCallback);
 
+// Optional: token verification route
+app.get("/auth/verify", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "No token provided" });
 
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ valid: true, decoded });
+  } catch {
+    res.status(401).json({ valid: false });
+  }
+});
 
+const PORT = process.env.PORT || 3000;
 connectmongoDB(process.env.MONGO_URI);
 
-
-app.listen(PORT ,()=>{
-    console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

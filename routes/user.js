@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
-const { createUser,login } = require('../controllers/user');
+const { createUser, login, verifyToken } = require('../controllers/user');
+
+// User signup
 router.post('/signup', createUser);
+
+// User login
 router.post('/login', login);
-// Add debug middleware
-const debuglog  = (req, res, next) => {
-    console.log('Auth Route Hit:', req.path);
-    console.log('Session:', req.session);
-    next();
-};
 
 
 
