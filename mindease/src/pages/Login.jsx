@@ -19,13 +19,12 @@ const Login = () => {
         formData
       );
       console.log("Login successful:", response.data);
-      
-      
+
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
       }
 
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (err) {
       console.error(err.response?.data || err.message);
       setError("Invalid email or password");
@@ -40,13 +39,13 @@ const Login = () => {
       <div className="absolute w-96 h-96 bg-pinkGlow rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
       <div className="absolute w-96 h-96 bg-aquaGlow rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
 
-      
-      <div className="z-10 bg-contain text-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    
+      <div className="z-10 bg-backg border border-darkblue text-darkblue p-8 rounded-xl shadow-lg w-full max-w-md">
         <h1 className="text-4xl font-bold mb-2">
-          <span className="text-white">Mind</span>
-          <span className="text-aquaGlow">Ease</span>
+          <span className="text-darkblue">Mind</span>
+          <span className="text-lightgreen">Ease</span>
         </h1>
-        <p className="mb-6 text-softGold">Welcome back to your safe place.</p>
+        <p className="mb-6 text-darkblue">Welcome back to your safe place.</p>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
@@ -60,7 +59,7 @@ const Login = () => {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="w-full px-4 py-2 rounded bg-darkBase border border-softGold text-white placeholder-softGold focus:outline-none focus:ring-2 focus:ring-aquaGlow"
+              className="w-full px-4 py-2 rounded bg-white border border-darkblue text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-aquaGlow"
               placeholder="you@example.com"
               required
             />
@@ -76,11 +75,12 @@ const Login = () => {
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
-              className="w-full px-4 py-2 rounded bg-darkBase border border-softGold text-white placeholder-softGold focus:outline-none focus:ring-2 focus:ring-aquaGlow"
+              className="w-full px-4 py-2 rounded bg-white border border-darkblue text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-aquaGlow"
               placeholder="••••••••"
               required
             />
           </div>
+
 
           {error && <p className="text-red-500 text-center">{error}</p>}
 
@@ -93,7 +93,7 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-softGold">
+        <p className="mt-6 text-center text-darkblue">
           Don't have an account?{" "}
           <Link to="/register" className="text-pinkGlow hover:underline">
             Sign Up
