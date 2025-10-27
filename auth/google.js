@@ -54,7 +54,7 @@ const handleGoogleCallback = async (req, res) => {
 
     // redirect to frontend with token (or send JSON)
     const frontendURL = process.env.NODE_ENV === "production"
-      ? "https://mindease-frontend.vercel.app"
+      ? "https://team5-backend.netlify.app"
       : "http://localhost:5173";
 
     res.redirect(`${frontendURL}/dashboard?token=${token}`);
