@@ -83,7 +83,7 @@ const App = () => {
           path="/miniques"
           element={
             <>
-              <Navbar />
+              <Navbar/>
               <MiniQuizzes />
               <Footer />
             </>
