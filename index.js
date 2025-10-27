@@ -28,11 +28,9 @@ app.get("/", (req, res) => {
 
 app.use("/", userRoutes);
 
-// Google OAuth endpoints
 app.get("/auth/google", getGoogleAuthURL);
 app.get("/auth/google/callback", handleGoogleCallback);
 
-// Optional: token verification route
 app.get("/auth/verify", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "No token provided" });
