@@ -17,7 +17,9 @@ const getGoogleAuthURL = (req, res) => {
     const url = client.generateAuthUrl({
       access_type: 'offline',
       prompt: 'consent',
-      scope: ['profile', 'email']
+      scope: [ 'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email'
+      ]
     });
     console.log('Redirecting to Google auth URL');
     return res.redirect(url);
@@ -42,7 +44,11 @@ const handleGoogleCallback = async (req, res) => {
 
     const oauth2 = google.oauth2({ auth: client, version: 'v2' });
     const { data } = await oauth2.userinfo.get();
-    console.log('Google userinfo:', { id: data.id, email: data.email });
+      if (!data || !data.email) {
+      console.error('No email in Google profile', data);
+      return res.status(400).send('Google profile incomplete');
+    }
+   
 
   
     let user = await User.findOne({ googleId: data.id }) || await User.findOne({ email: data.email });
