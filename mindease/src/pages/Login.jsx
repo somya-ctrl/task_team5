@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { FcGoogle } from "react-icons/fc"; 
+import { loginUser } from "../api"; 
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,11 +15,7 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        "https://mindease-backend-cyvy.onrender.com/login",
-        formData
-      );
-      console.log("Login successful:", response.data);
+      const response = await loginUser(formData);
 
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
@@ -33,13 +30,15 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-backg relative overflow-hidden">
-      
       <div className="absolute w-96 h-96 bg-pinkGlow rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
       <div className="absolute w-96 h-96 bg-aquaGlow rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
 
-    
       <div className="z-10 bg-backg border border-darkblue text-darkblue p-8 rounded-xl shadow-lg w-full max-w-md">
         <h1 className="text-4xl font-bold mb-2">
           <span className="text-darkblue">Mind</span>
@@ -64,6 +63,7 @@ const Login = () => {
               required
             />
           </div>
+
           <div>
             <label className="block text-sm mb-1" htmlFor="password">
               Password
@@ -76,11 +76,10 @@ const Login = () => {
                 setFormData({ ...formData, password: e.target.value })
               }
               className="w-full px-4 py-2 rounded bg-white border border-darkblue text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-aquaGlow"
-              placeholder="••••••••"
+              placeholder="Password"
               required
             />
           </div>
-
 
           {error && <p className="text-red-500 text-center">{error}</p>}
 
@@ -92,6 +91,14 @@ const Login = () => {
             {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
+
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full mt-4 flex items-center justify-center border border-darkblue py-2 rounded hover:bg-darkblue hover:text-white transition font-semibold gap-2"
+        >
+          <FcGoogle size={22} />
+          Continue with Google
+        </button>
 
         <p className="mt-6 text-center text-darkblue">
           Don't have an account?{" "}

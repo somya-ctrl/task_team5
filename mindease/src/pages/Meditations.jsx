@@ -109,7 +109,7 @@ const Meditations = () => {
             Choose your practise
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl">
+          <div className="grid grid-cols-1  lg:grid-cols-3 gap-12 max-w-6xl">
             {practices.map((item, index) => (
               <div
                 key={index}
