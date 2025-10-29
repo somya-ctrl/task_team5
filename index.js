@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://team5-backend.netlify.app"],
+    origin: ["http://localhost:5173", "https://mindease-team5-task.netlify.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -27,6 +27,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", userRoutes);
+
+
 
 app.get("/auth/google", getGoogleAuthURL);
 app.get("/auth/google/callback", handleGoogleCallback);
@@ -47,3 +49,4 @@ const PORT = process.env.PORT || 3000;
 connectmongoDB(process.env.MONGO_URI);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+ 

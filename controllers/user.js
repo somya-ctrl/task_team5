@@ -1,4 +1,7 @@
 const bcrypt = require('bcrypt');
+const axios = require("axios");
+
+let lastResult = null; 
 const User = require('../models/user');
 async function createUser(req, res) {
    
@@ -44,4 +47,40 @@ const verifyToken = async (req, res, next) => {
         res.status(401).json({ error: 'Invalid token' });
     }
 };
-module.exports = { createUser, login, verifyToken };
+async function submitquiz(req, res) {
+   
+ try {
+    const { answers } = req.body;
+
+    if (!Array.isArray(answers) || answers.length !== 21) {
+      return res.status(400).json({ error: "21 answers required." });
+    }
+
+    const mlResponse = await axios.post("ml api", { answers });
+    const { score } = mlResponse.data;
+
+    let status, suggestion;
+    lastResult = { score, status, suggestion };
+
+    res.json({ success: true, message: "Quiz submitted successfully." });
+  } catch (error) {
+    console.error("Error communicating with ML model:", error.message);
+    res.status(500).json({ error: "Server or ML model error" });
+  }
+};
+async function getQuizResult(req, res) {
+    try {
+    if (!lastResult) {
+      return res.status(404).json({ error: "No quiz result found." });
+    }
+
+    res.json({
+      success: true,
+      result: lastResult,
+    });
+  } catch (error) {
+    console.error("Error fetching result:", error.message);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult };
