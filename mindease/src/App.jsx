@@ -14,6 +14,7 @@ import Meditations from "./pages/Meditations";
 import MoodDetection from "./pages/MoodDetection";
 import User from './pages/User'
 import MiniQuizzes from "./pages/MiniQuizzes";
+import Aboutus from "../src/pages/About"
 
 const App = () => {
   return (
@@ -79,6 +80,17 @@ const App = () => {
           }
         />
 
+
+  <Route
+          path="/about"
+          element={
+            <>
+              <Navbar />
+              <Aboutus/>
+              <Footer />
+            </>
+          }
+        />
         <Route
           path="/miniques"
           element={

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc"; 
 import { loginUser } from "../api"; 
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../firebase";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,9 +33,21 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
-  };
+ const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const token = await user.getIdToken(); 
+    localStorage.setItem("token", token);
+
+    navigate("/dashboard");
+  } catch (error) {
+    console.error("Google Sign-In Error:", error);
+    setError("Google Login Failed");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-backg relative overflow-hidden">

@@ -4,6 +4,7 @@ import Shape from '../assets/shape.jpg'
 import Footer from "../components/Navbar";
 import Navbar from '../components/Footer';
 import { useRef } from "react";
+import Guided from "../assets/Guided.png"
 
 export default function Dashboard() {
   
@@ -18,9 +19,6 @@ const handleScrollToFeatures = () => {
     <div className="min-h-screen bg-backg text-darkblue">
       
 
-    
-
-      
       <main className="hero-bg mt-20">
         <section className="max-w-6xl px-6 mx-auto md:px-12 py-16">
           <div className="max-w-5xl mx-auto">
@@ -70,8 +68,12 @@ const handleScrollToFeatures = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 ">
             
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
+              
               <div className="w-16 h-16 mx-auto mb-4">
-                
+
+                <img src={Guided}  
+              alt="Guided Meditations"
+className="rounded-3xl w-20 h-16 shadow-lg"/>
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
                 Guided Meditations
