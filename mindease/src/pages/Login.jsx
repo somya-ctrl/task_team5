@@ -1,59 +1,70 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc"; 
-import { loginUser } from "../api"; 
-import { signInWithPopup } from "firebase/auth";
+import axios from "axios";
 import { auth, provider } from "../firebase";
-
+import { signInWithPopup } from "firebase/auth";
+import { FaGoogle } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
 
     try {
-      setLoading(true);
-      const response = await loginUser(formData);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+        formData
+      );
 
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-      }
+      const { user, token } = res.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/dashboard");
     } catch (err) {
-      console.error(err.response?.data || err.message);
       setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
- const handleGoogleLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
+  
+  const handleGoogleLogin = async () => {
+    setError("");
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const userData = {
+        name: result.user.displayName,
+        email: result.user.email,
+      };
 
-    const token = await user.getIdToken(); 
-    localStorage.setItem("token", token);
-
-    navigate("/dashboard");
-  } catch (error) {
-    console.error("Google Sign-In Error:", error);
-    setError("Google Login Failed");
-  }
-};
-
+      localStorage.setItem("user", JSON.stringify(userData));
+      navigate("/dashboard");
+    } catch (error) {
+      setError("Google Login failed");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-backg relative overflow-hidden">
+      
       <div className="absolute w-96 h-96 bg-pinkGlow rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
       <div className="absolute w-96 h-96 bg-aquaGlow rounded-full blur-3xl opacity-30 bottom-10 right-10 animate-pulse"></div>
 
+      
       <div className="z-10 bg-backg border border-darkblue text-darkblue p-8 rounded-xl shadow-lg w-full max-w-md">
         <h1 className="text-4xl font-bold mb-2">
           <span className="text-darkblue">Mind</span>
@@ -63,16 +74,12 @@ const Login = () => {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm mb-1" htmlFor="email">
-              Email address
-            </label>
+            <label className="block text-sm mb-1" htmlFor="email">Email address</label>
             <input
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-4 py-2 rounded bg-white border border-darkblue text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-aquaGlow"
               placeholder="you@example.com"
               required
@@ -80,18 +87,14 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-sm mb-1" htmlFor="password">
-              Password
-            </label>
+            <label className="block text-sm mb-1" htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
               value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full px-4 py-2 rounded bg-white border border-darkblue text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-aquaGlow"
-              placeholder="Password"
+              placeholder="P@ssword"
               required
             />
           </div>
@@ -107,12 +110,19 @@ const Login = () => {
           </button>
         </form>
 
+        
+        <div className="flex items-center my-5">
+          <div className="flex-grow border-t border-darkblue"></div>
+          <span className="mx-3 text-darkblue">OR</span>
+          <div className="flex-grow border-t border-darkblue"></div>
+        </div>
+
+        {/* Google Login */}
         <button
           onClick={handleGoogleLogin}
-          className="w-full mt-4 flex items-center justify-center border border-darkblue py-2 rounded hover:bg-darkblue hover:text-white transition font-semibold gap-2"
+          className="w-full border border-darkblue bg-aquaGlow text-white py-2 rounded font-semibold flex items-center justify-center gap-3 hover:bg-pinkGlow  transition"
         >
-          <FcGoogle size={22} />
-          Continue with Google
+          <FaGoogle /> Continue with Google
         </button>
 
         <p className="mt-6 text-center text-darkblue">

@@ -12,7 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Journal from "./pages/Journal";
 import Meditations from "./pages/Meditations";
 import MoodDetection from "./pages/MoodDetection";
-import User from './pages/User'
+import Profile from './pages/Profile'
 import MiniQuizzes from "./pages/MiniQuizzes";
 import Aboutus from "../src/pages/About"
 
@@ -73,9 +73,9 @@ const App = () => {
           path="/profile"
           element={
             <>
-              <Navbar />
-              <User/>
-              <Footer />
+              
+              <Profile/>
+              
             </>
           }
         />
