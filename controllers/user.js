@@ -3,6 +3,8 @@ const axios = require("axios");
 
 let lastResult = null; 
 const User = require('../models/user');
+const Quiz = require('../models/quiz');
+const jwt = require('jsonwebtoken');
 async function createUser(req, res) {
    
     try {
@@ -28,7 +30,13 @@ async function login (req,res){
         if(!isMatch){
             return res.status(401).json({error:'Invalid credentials'});
         }
-        res.status(200).json({message:'Login successful'});
+         const token = jwt.sign(
+          { id: user._id, email: user.email },
+           process.env.JWT_SECRET,
+          { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
+    );
+        res.status(200).json({message:'Login successful', token,
+        user: { id: user._id, name: user.name, email: user.email }});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -52,32 +60,47 @@ async function submitquiz(req, res) {
  try {
     const { answers } = req.body;
 
-    if (!Array.isArray(answers) || answers.length !== 21) {
-      return res.status(400).json({ error: "21 answers required." });
-    }
+    // if (!Array.isArray(answers) || answers.length !== 21) {
+    //   return res.status(400).json({ error: "21 answers required." });
+    // }
 
-    const mlResponse = await axios.post("ml api", { answers });
-    const { score } = mlResponse.data;
+    // const mlResponse = await axios.post("ml api", { answers });
+    const mlResponse = { data: { score: 75, status: "Mild", suggestion: "Consult counselor" } };
 
-    let status, suggestion;
-    lastResult = { score, status, suggestion };
+  //   const { score } = mlResponse.data;
 
-    res.json({ success: true, message: "Quiz submitted successfully." });
+  //   let status, suggestion;
+  //   lastResult = { score, status, suggestion };
+
+  //   res.json({ success: true, message: "Quiz submitted successfully." });
+  // } catch (error) {
+  //   console.error("Error communicating with ML model:", error.message);
+  //   res.status(500).json({ error: "Server or ML model error" });
+  
+    const { score, status, suggestion } = mlResponse.data;
+
+    const quiz = new Quiz({
+      user: req.user.id,
+      answers,
+      score,
+      status,
+      suggestion,
+    });
+
+    await quiz.save();
+
+    res.json({ success: true, message: "Quiz submitted successfully.", quiz });
   } catch (error) {
     console.error("Error communicating with ML model:", error.message);
     res.status(500).json({ error: "Server or ML model error" });
   }
-};
+}
 async function getQuizResult(req, res) {
-    try {
-    if (!lastResult) {
-      return res.status(404).json({ error: "No quiz result found." });
-    }
+  try {
+    const userId = req.user.id;
+    const quizzes = await Quiz.find({ user: userId }).sort({ createdAt: -1 });
 
-    res.json({
-      success: true,
-      result: lastResult,
-    });
+    res.json({ success: true, quizzes });
   } catch (error) {
     console.error("Error fetching result:", error.message);
     res.status(500).json({ error: "Server error" });

@@ -14,7 +14,7 @@ router.get('/auth/google/callback', handleGoogleCallback);
 router.get('/auth/google/error', (req, res) => {
   res.status(400).json({ error: 'Google auth failed' });
 });
-router.post("/submit", submitquiz);
-router.get("/result", getQuizResult);
+router.post("/submit",verifyToken, submitquiz);
+router.get("/result",verifyToken, getQuizResult);
 
 module.exports = router;

@@ -8,11 +8,13 @@ const User = require('../models/user');
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_CALLBACK_URL
+  process.env.GOOGLE_REDIRECT_URI
 );
 
 
 const getGoogleAuthURL = (req, res) => {
+  console.log("OAuth Redirect URI used:", process.env.GOOGLE_REDIRECT_URI);
+
   try {
     const url = client.generateAuthUrl({
       access_type: 'offline',
