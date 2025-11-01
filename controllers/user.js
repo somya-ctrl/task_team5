@@ -4,7 +4,7 @@ const axios = require("axios");
 let lastResult = null; 
 const User = require('../models/user');
 const Quiz = require('../models/quiz');
-const Questions = require('../models/user');
+const questions = require('../questions/ques');
 const jwt = require('jsonwebtoken');
 async function createUser(req, res) {
    
@@ -56,6 +56,18 @@ const verifyToken = async (req, res, next) => {
         res.status(401).json({ error: 'Invalid token' });
     }
 };
+const createquiz = async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      count: questions.length,
+      questions: questions
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to load questions" });
+  }
+};
+
 const submitquiz = async (req, res) => {
   try {
     const { answers } = req.body;
@@ -122,6 +134,7 @@ const submitquiz = async (req, res) => {
         probability,
         score_text,
         score,
+
       },
     });
   } catch (error) {
@@ -139,7 +152,7 @@ async function getQuizResult(req, res) {
       .sort({ createdAt: -1 })
       .select("answers prediction probability score_text score createdAt");
 
-    // Transform data if you want to send `inputData`-style view back
+  
     const formatted = quizzes.map((quiz) => {
       const a = quiz.answers; // array
       return {
@@ -149,7 +162,6 @@ async function getQuizResult(req, res) {
         probability: quiz.probability,
         score_text: quiz.score_text,
         score: quiz.score,
-        // Map answers back into labeled structure for frontend readability
         inputData: {
           Age: a[0],
           Gender: a[1],
@@ -184,4 +196,4 @@ async function getQuizResult(req, res) {
 }
 
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult }; 
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz }; 
