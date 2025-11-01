@@ -99,7 +99,18 @@ const submitquiz = async (req, res) => {
 
     
     const score = Math.round(probability * 100); // convert 0.812 → 81
+    const userId = req.user.id;
+    const quizzes = new Quiz({
+      user: userId,
+      answers,
+      prediction,
+      probability,
+      score_text,
+      score,
+    });
+    await quizzes.save();
 
+    
     
     global.lastResult = { prediction, probability, score_text, score };
 
@@ -122,12 +133,55 @@ const submitquiz = async (req, res) => {
 async function getQuizResult(req, res) {
   try {
     const userId = req.user.id;
-    const quizzes = await Quiz.find({ user: userId }).sort({ createdAt: -1 });
 
-    res.json({ success: true, quizzes });
+    
+    const quizzes = await Quiz.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .select("answers prediction probability score_text score createdAt");
+
+    // Transform data if you want to send `inputData`-style view back
+    const formatted = quizzes.map((quiz) => {
+      const a = quiz.answers; // array
+      return {
+        _id: quiz._id,
+        createdAt: quiz.createdAt,
+        prediction: quiz.prediction,
+        probability: quiz.probability,
+        score_text: quiz.score_text,
+        score: quiz.score,
+        // Map answers back into labeled structure for frontend readability
+        inputData: {
+          Age: a[0],
+          Gender: a[1],
+          Country: a[2],
+          self_employed: a[3],
+          family_history: a[4],
+          no_employees: a[5],
+          remote_work: a[6],
+          tech_company: a[7],
+          benefits: a[8],
+          care_options: a[9],
+          wellness_program: a[10],
+          seek_help: a[11],
+          anonymity: a[12],
+          mental_health_consequence: a[13],
+          phys_health_consequence: a[14],
+          coworkers: a[15],
+          supervisor: a[16],
+          mental_health_interview: a[17],
+          phys_health_interview: a[18],
+          mental_vs_physical: a[19],
+          obs_consequence: a[20],
+        },
+      };
+    });
+
+    res.json({ success: true, quizzes: formatted });
   } catch (error) {
     console.error("Error fetching result:", error.message);
     res.status(500).json({ error: "Server error" });
   }
-};
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult };
+}
+
+
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult }; 
