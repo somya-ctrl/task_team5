@@ -7,6 +7,9 @@ import { FaGoogle } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
+  
+const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
 
   const [formData, setFormData] = useState({
     email: "",
@@ -16,30 +19,51 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/login`,
-        formData
-      );
+  // Email must start with a letter + valid format
+  const emailRegex = /^[A-Za-z][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  if (!emailRegex.test(formData.email)) {
+    setError("Please enter a valid email that starts with a letter.");
+    return;
+  }
 
-      const { user, token } = res.data;
+  // Password must have at least one special character
+  const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+  if (!specialCharRegex.test(formData.password)) {
+    setError("Password must contain at least one special character.");
+    return;
+  }
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+  // Minimum password length
+  if (formData.password.length < 6) {
+    setError("Password must be at least 6 characters long.");
+    return;
+  }
 
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Invalid email or password");
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/login`,
+      formData
+    );
+
+    const { user, token } = res.data;
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    navigate("/dashboard");
+  } catch (err) {
+    setError("Invalid email or password");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   
   const handleGoogleLogin = async () => {
@@ -72,7 +96,7 @@ const Login = () => {
         </h1>
         <p className="mb-6 text-darkblue">Welcome back to your safe place.</p>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit} autoComplete="off">
           <div>
             <label className="block text-sm mb-1" htmlFor="email">Email address</label>
             <input
@@ -80,8 +104,8 @@ const Login = () => {
               id="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 rounded bg-white border border-darkblue text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-aquaGlow"
-              placeholder="you@example.com"
+              className="w-full px-4 py-2 rounded bg-blue-200 border border-darkblue text-darkblue placeholder-darkblue focus:outline-none"
+              placeholder="you@gmail.com"
               required
             />
           </div>
@@ -93,7 +117,7 @@ const Login = () => {
               id="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-4 py-2 rounded bg-white border border-darkblue text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-aquaGlow"
+              className="w-full px-4 py-2 rounded bg-lightgreen border border-darkblue text-darkblue placeholder-darkblue focus:outline-none"
               placeholder="P@ssword"
               required
             />

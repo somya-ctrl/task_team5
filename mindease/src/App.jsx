@@ -100,7 +100,7 @@ const App = () => {
             <>
               <Navbar/>
               <MiniQuizzes />
-              <Footer />
+              
             </>
           }
         />

@@ -17,30 +17,58 @@ const Register = () => {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+  // Name: Only letters & spaces allowed
+  const nameRegex = /^[A-Za-z ]+$/;
+  if (!nameRegex.test(formData.name.trim())) {
+    setError("Name should only contain letters and spaces.");
+    return;
+  }
 
-    try {
-      setLoading(true);
-      await registerUser({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      });
+  // Email must start with a letter + follow standard email format
+  const emailRegex = /^[A-Za-z][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  if (!emailRegex.test(formData.email)) {
+    setError("Please enter a valid email that starts with a letter.");
+    return;
+  }
 
-      navigate("/login");
-    } catch (err) {
-      console.log(err.response?.data || err.message);
-      setError(err.response?.data?.message || "Registration failed. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Password must contain at least one special character
+  const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+  if (!specialCharRegex.test(formData.password)) {
+    setError("Password must contain at least one special character.");
+    return;
+  }
+
+  // Password length
+  if (formData.password.length < 6) {
+    setError("Password must be at least 6 characters long.");
+    return;
+  }
+
+  // Confirm password match
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    await registerUser({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+    navigate("/login");
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+    setError(err.response?.data?.message || "Registration failed. Try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-backg relative overflow-hidden">
@@ -62,7 +90,7 @@ const Register = () => {
             placeholder="Full Name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-2 rounded-md bg-transparent border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
+            className="w-full px-4 py-2 rounded-md bg-blue-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
             required
           />
 
@@ -71,7 +99,7 @@ const Register = () => {
             placeholder="Email address"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-2 rounded-md bg-transparent border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
+            className="w-full px-4 py-2 rounded-md bg-blue-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
             required
           />
 
@@ -83,7 +111,7 @@ const Register = () => {
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
-              className="w-full px-4 py-2 rounded-md bg-transparent border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
+              className="w-full px-4 py-2 rounded-md bg-blue-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
               required
             />
             <span
@@ -102,7 +130,7 @@ const Register = () => {
               onChange={(e) =>
                 setFormData({ ...formData, confirmPassword: e.target.value })
               }
-              className="w-full px-4 py-2 rounded-md bg-transparent border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
+              className="w-full px-4 py-2 rounded-md bg-blue-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
               required
             />
             <span

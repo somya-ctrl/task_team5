@@ -94,7 +94,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
 
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
               <div className="w-16 h-16 mx-auto mb-4">
-                {/* Icon here */}
+                
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
                 Mood Detection
