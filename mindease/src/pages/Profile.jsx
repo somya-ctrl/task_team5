@@ -52,7 +52,7 @@ const Profile = () => {
         
         <h1 className="text-3xl font-bold text-darkblue mb-6">My Profile</h1>
 
-        <div className="bg-lightgrey rounded-lg p-6 flex justify-between items-center">
+        <div className="bg-white rounded-lg p-6 flex justify-between items-center">
 
           <div className="flex items-center gap-4">
             <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />

@@ -1,14 +1,14 @@
-import { Link} from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
+
 import Mountain from '../assets/mountain.jpg'
 import Shape from '../assets/shape.jpg'
-import Footer from "../components/Navbar";
-import Navbar from '../components/Footer';
 import { useRef } from "react";
 import Guided from "../assets/Guided.png"
 
 export default function Dashboard() {
   
   const featuresRef = useRef(null);
+const navigate = useNavigate();
 
 const handleScrollToFeatures = () => {
   featuresRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -19,7 +19,7 @@ const handleScrollToFeatures = () => {
     <div className="min-h-screen bg-backg text-darkblue">
       
 
-      <main className="hero-bg mt-20">
+      <main className="hero-bg mt-22">
         <section className="max-w-6xl px-6 mx-auto md:px-12 py-16">
           <div className="max-w-5xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-center text-darkblue">
@@ -35,13 +35,8 @@ const handleScrollToFeatures = () => {
               community to help you navigate life’s challenges with calm and clarity.
             </p>
 
-            <div className="mt-10 pb-8 flex flex-wrap items-center justify-center gap-6">
-              <Link
-                to="/miniques"
-                className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-aquaGlow text-black font-semibold text-xl hover:bg-pinkGlow transition shadow-sm"
-              >
-                Start Your Journey
-              </Link>
+            <div className="mt-15 pb-8 flex flex-wrap items-center justify-center gap-6">
+              
 
               <button
                 onClick={handleScrollToFeatures}
@@ -53,7 +48,7 @@ const handleScrollToFeatures = () => {
           </div>
 
         
-          <div className="mt-14 text-center">
+          <div className="mt-12 text-center">
             <h3 className="text-4xl font-bold text-darkblue">
               Everything you need for <span className="text-aquaGlow">wellness</span>
             </h3>
@@ -64,7 +59,7 @@ const handleScrollToFeatures = () => {
         </section>
 
         
-        <section ref={featuresRef} className="max-w-6xl mx-auto px-6 md:px-12 py-20">
+        <section ref={featuresRef} className="max-w-6xl mx-auto px-6 md:px-12 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 ">
             
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
@@ -84,18 +79,18 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
               </p>
             </div>
 
-            
-            <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue ">
-              <div className="w-16 h-16 mx-auto mb-4">
-              
-              </div>
-              <h4 className="text-xl font-bold text-darkblue mb-2">
-                Daily Journal
-              </h4>
-              <p className="text-darkblue text-sm">
-                Reflect on your thoughts and track your emotional growth through daily entries.
-              </p>
-            </div>
+                <div 
+            onClick={() => navigate("/miniques")}   
+            className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue cursor-pointer"
+          >
+            <div className="w-16 h-16 mx-auto mb-4"></div>
+            <h4 className="text-xl font-bold text-darkblue mb-2">
+              Mental Wellness Check
+            </h4>
+            <p className="text-darkblue text-sm">
+              A short assessment that suggests whether you're doing fine, need extra self-care, or may benefit from talking to someone.
+            </p>
+          </div>
 
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
               <div className="w-16 h-16 mx-auto mb-4">
@@ -115,10 +110,10 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
                
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
-                Progress Insights
+                Daily Journal
               </h4>
               <p className="text-darkblue text-sm">
-                Visualize your mental wellness progress with helpful charts and stats.
+                Reflect on your thoughts and track your emotional growth through daily entries
               </p>
             </div>
 
@@ -131,7 +126,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
                 AI Companion
               </h4>
               <p className="text-darkblue text-sm">
-                Chat with our AI-powered assistant for real-time emotional support.
+                Chat with our AI-powered Therapist for real-time emotional support.
               </p>
             </div>
 

@@ -36,27 +36,78 @@ const MiniQuizzes = () => {
     setAnswers((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Validation
-    for (const key in answers) {
-      if (answers[key] === "") {
-        alert(`Please answer all questions before submitting.`);
-        return;
+  for (const key in answers) {
+    if (answers[key] === "") {
+      alert(`Please answer all questions before submitting.`);
+      return;
+    }
+  }
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("You must be logged in to submit the quiz.");
+    return;
+  }
+
+  setLoading(true);
+
+  const orderedAnswers = [
+    Number(answers.age), 
+    answers.gender,
+    answers.country,
+    answers.selfEmployed,
+    answers.familyHistory,
+    answers.employees,
+    answers.remoteWork,
+    answers.techCompany,
+    answers.mentalHealthBenefits,
+    answers.healthOptionsAvailable,
+    answers.wellnessProgram,
+    answers.encourageHelp,
+    answers.confidentiality,
+    answers.negativeConsequences,
+    answers.physicalHealthImpact,
+    answers.talkCoworkers,
+    answers.talkSupervisor,
+    answers.discussMHInterview,
+    answers.discussPHInterview,
+    answers.equality,
+    answers.unfairTreatment
+  ];
+
+  try {
+    
+    await axios.post(
+      "https://mindease-backend-cyvy.onrender.com/submit",
+      { answers: orderedAnswers },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
       }
-    }
+    );
 
-    setLoading(true);
-    try {
-      const res = await axios.post("http://localhost:5000/api/predict", answers);
-      setResult(res.data.result || "Result received successfully!");
-    } catch (error) {
-      console.error(error);
-      alert("Error submitting responses. Please try again.");
-    }
-    setLoading(false);
-  };
+    
+    const resultResponse = await axios.get(
+      "https://mindease-backend-cyvy.onrender.com/result",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    setResult(resultResponse.data);
+  } catch (error) {
+    console.error("Submit/Result Error:", error.response?.data || error);
+    alert("Error submitting or fetching result.");
+  }
+
+  setLoading(false);
+};
+
 
   return (
     <>
@@ -101,7 +152,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-            <option value="" disabled selected>--Select--</option>
+            <option value="" disabled >--Select--</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
@@ -146,7 +197,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
   
@@ -163,7 +214,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled>--Select--</option>
     <option value="1-5">1-5</option>
     <option value="6-25">6-25</option>
     <option value="26-100">26-100</option>
@@ -186,7 +237,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     
@@ -203,7 +254,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     
@@ -220,7 +271,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled>--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="Don't Know">Don't Know</option>
@@ -238,7 +289,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled>--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
 
@@ -259,7 +310,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
      <option value="Don't Know">Don't Know</option>
@@ -277,7 +328,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="Don't Know">Don't Know</option>
@@ -296,7 +347,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled>--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="Don't KNow">Don't Know</option>
@@ -315,7 +366,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="maybe">Maybe</option>
@@ -331,7 +382,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled>--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="maybe">Maybe</option>
@@ -347,7 +398,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="Some of them">Some of them</option>
@@ -363,7 +414,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled>--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="Some of them">Some of them</option>
@@ -379,7 +430,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="maybe">Maybe</option>
@@ -395,7 +446,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="maybe">Maybe</option>
@@ -411,7 +462,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
     <option value="Don't Knnow">Don't Know</option>
@@ -427,7 +478,7 @@ const MiniQuizzes = () => {
             onChange={handleChange}
             className="bg-aquaGlow text-darkblue font-medium text-center rounded-md w-40 py-2 focus:outline-none"
           >
-    <option value="" disabled selected>--Select--</option>
+    <option value="" disabled >--Select--</option>
     <option value="yes">Yes</option>
     <option value="no">No</option>
   </select>
@@ -445,12 +496,25 @@ const MiniQuizzes = () => {
       
       </form>
 
- {result && (
-        <p className="text-darkblue font-semibold mt-6 text-center">
-          🧠 Result: {result}
-        </p>
+{result && (
+  <div className="mt-6 p-4 bg-white border rounded-lg shadow-md text-center">
+    <h2 className="text-2xl font-semibold text-blue-700">🧠 Your Mental Wellness Result</h2>
 
- )}
+    <p className="text-lg mt-3 font-medium">
+      <strong>Prediction:</strong> {result.prediction}
+    </p>
+
+    <p className="text-lg mt-2">
+      <strong>Score:</strong> {result.score} ({result.score_text})
+    </p>
+
+    <p className="text-sm text-gray-600 mt-3">
+      Probability: {(result.probability * 100).toFixed(1)}%
+    </p>
+  </div>
+)}
+
+
     </div>
     
     </>

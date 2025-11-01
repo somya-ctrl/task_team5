@@ -15,6 +15,7 @@ import MoodDetection from "./pages/MoodDetection";
 import Profile from './pages/Profile'
 import MiniQuizzes from "./pages/MiniQuizzes";
 import Aboutus from "../src/pages/About"
+import Chatbot from "./pages/Chatbot";
 
 const App = () => {
   return (
@@ -91,6 +92,8 @@ const App = () => {
             </>
           }
         />
+        <Route path="/chatbot" element={<Chatbot />} />
+
         <Route
           path="/miniques"
           element={

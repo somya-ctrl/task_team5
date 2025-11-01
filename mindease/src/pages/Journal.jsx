@@ -1,12 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { FaBook, FaSmile, FaFrown, FaSadTear, FaRegLaughBeam, FaAngry } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export const Journal = () => {
+  const [journalText, setJournalText] = useState("");
+  const navigate = useNavigate();
+
+  const handleAnalyse = async () => {
+    if (!journalText.trim()) return;
+
+    try {
+      await axios.post("https://your-backend-url/api/analyze", {
+        text: journalText,
+      });
+
+      navigate("/chatbot");
+
+    } catch (error) {
+      console.log("Error sending journal text:", error);
+    }
+  };
+
+  
+  const handleMoodSelect = async (mood) => {
+    if (!journalText.trim()) return;
+
+    try {
+      await axios.post("https://your-backend-url/api/mood", {
+        text: journalText,
+        mood: mood,
+      });
+
+      navigate("/chatbot");
+
+    } catch (error) {
+      console.log("Error sending mood data:", error);
+    }
+  };
+
   return (
     <>
       <div className="bg-backg min-h-screen w-full py-35 px-4">
 
-        {/* Page Heading */}
         <div className="text-center mb-20">
           <div className="text-4xl text-lightgreen mb-2 flex justify-center">
             <FaBook />
@@ -17,7 +53,6 @@ export const Journal = () => {
           </p>
         </div>
 
-        {/* Journal Input Card */}
         <div className="max-w-3xl mx-auto bg-lightgrey border-2 border-lightgreen rounded-xl p-6 shadow-sm">
           <p className="text-darkblue font-semibold text-lg border-b border-aquaGlow pb-2 mb-4 -mx-6 px-6">
             {new Date().toLocaleDateString("en-US", {
@@ -32,16 +67,20 @@ export const Journal = () => {
             className="w-full h-60 focus:outline-none"
             placeholder=" What’s on your mind? 
 Write your thoughts, feelings, or reflections here..."
+            value={journalText}
+            onChange={(e) => setJournalText(e.target.value)}
           ></textarea>
 
           <div className="text-center mt-5">
-            <button className="bg-lightgreen text-white font-medium py-2 px-8 rounded-full hover:bg-aquaGlow transition">
+            <button
+              onClick={handleAnalyse}
+              className="bg-lightgreen text-white font-medium py-2 px-8 rounded-full hover:bg-aquaGlow transition"
+            >
               Analyse Text
             </button>
           </div>
         </div>
 
-        {/* Mood Rating Section */}
         <div className="max-w-3xl mx-auto bg-lightgrey border-2 border-lightgreen rounded-xl p-6 text-center mt-20 shadow-sm">
           <p className="text-darkblue font-semibold mb-5">
             How are you feeling today?
@@ -57,6 +96,7 @@ Write your thoughts, feelings, or reflections here..."
             ].map((item) => (
               <button
                 key={item.label}
+                onClick={() => handleMoodSelect(item.label)} 
                 className="border-2 border-aquaGlow rounded-lg py-4 text-lightgreen hover:bg-aquaGlow hover:text-white transition flex flex-col items-center"
               >
                 {item.icon}
