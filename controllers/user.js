@@ -4,6 +4,7 @@ const axios = require("axios");
 let lastResult = null; 
 const User = require('../models/user');
 const Quiz = require('../models/quiz');
+const Questions = require('../models/user');
 const jwt = require('jsonwebtoken');
 async function createUser(req, res) {
    
@@ -55,46 +56,69 @@ const verifyToken = async (req, res, next) => {
         res.status(401).json({ error: 'Invalid token' });
     }
 };
-async function submitquiz(req, res) {
-   
- try {
+const submitquiz = async (req, res) => {
+  try {
     const { answers } = req.body;
 
-    // if (!Array.isArray(answers) || answers.length !== 21) {
-    //   return res.status(400).json({ error: "21 answers required." });
-    // }
+    if (!answers || !Array.isArray(answers)) {
+      return res.status(400).json({ error: "Answers array is required" });
+    }
+    const inputData = {
+      Age: answers[0],
+      Gender: answers[1],
+      Country: answers[2],
+      self_employed: answers[3],
+      family_history: answers[4],
+      no_employees: answers[5],
+      remote_work: answers[6],
+      tech_company: answers[7],
+      benefits: answers[8],
+      care_options: answers[9],
+      wellness_program: answers[10],
+      seek_help: answers[11],
+      anonymity: answers[12],
+      mental_health_consequence: answers[13],
+      phys_health_consequence: answers[14],
+      coworkers: answers[15],
+      supervisor: answers[16],
+      mental_health_interview: answers[17],
+      phys_health_interview: answers[18],
+      mental_vs_physical: answers[19],
+      obs_consequence: answers[20],
+    };
 
-    // const mlResponse = await axios.post("ml api", { answers });
-    const mlResponse = { data: { score: 75, status: "Mild", suggestion: "Consult counselor" } };
+    
+    const mlResponse = await axios.post("https://mental-health-treatment-api.onrender.com/predict", inputData);
 
-  //   const { score } = mlResponse.data;
+    const { prediction, probability, score_text } = mlResponse.data;
 
-  //   let status, suggestion;
-  //   lastResult = { score, status, suggestion };
+    
+    if (prediction === undefined || probability === undefined) {
+      return res.status(500).json({ error: "Invalid response from ML API" });
+    }
 
-  //   res.json({ success: true, message: "Quiz submitted successfully." });
-  // } catch (error) {
-  //   console.error("Error communicating with ML model:", error.message);
-  //   res.status(500).json({ error: "Server or ML model error" });
-  
-    const { score, status, suggestion } = mlResponse.data;
+    
+    const score = Math.round(probability * 100); // convert 0.812 → 81
 
-    const quiz = new Quiz({
-      user: req.user.id,
-      answers,
-      score,
-      status,
-      suggestion,
+    
+    global.lastResult = { prediction, probability, score_text, score };
+
+    res.json({
+      success: true,
+      message: "Quiz submitted successfully",
+      result: {
+        prediction,
+        probability,
+        score_text,
+        score,
+      },
     });
-
-    await quiz.save();
-
-    res.json({ success: true, message: "Quiz submitted successfully.", quiz });
   } catch (error) {
-    console.error("Error communicating with ML model:", error.message);
+    console.error("Error in submitQuiz:", error.message);
     res.status(500).json({ error: "Server or ML model error" });
   }
-}
+};
+
 async function getQuizResult(req, res) {
   try {
     const userId = req.user.id;

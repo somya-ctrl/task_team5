@@ -23,4 +23,10 @@ const QuizSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+const questionSchema = new mongoose.Schema({
+  questionText: { type: String, required: true },
+  options: [{ type: String, required: true }],
+});
+
+module.exports = mongoose.model("Questions", questionSchema);
 module.exports = mongoose.model('Quiz', QuizSchema);
