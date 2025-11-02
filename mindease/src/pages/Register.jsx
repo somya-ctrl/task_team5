@@ -34,6 +34,13 @@ const Register = () => {
     return;
   }
 
+  // ✅ ALLOW ONLY GMAIL
+  const allowedDomainRegex = /^[A-Za-z0-9._%+-]+@gmail\.com$/;
+  if (!allowedDomainRegex.test(formData.email)) {
+    setError("Only Gmail addresses are allowed.");
+    return;
+  }
+
   // Password must contain at least one special character
   const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
   if (!specialCharRegex.test(formData.password)) {
@@ -69,7 +76,6 @@ const Register = () => {
   }
 };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-backg relative overflow-hidden">
       <div className="absolute w-96 h-96 bg-pinkGlow rounded-full blur-3xl opacity-30 top-10 left-10 animate-pulse"></div>
@@ -96,6 +102,7 @@ const Register = () => {
 
           <input
             type="email"
+            id="email"
             placeholder="Email address"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}

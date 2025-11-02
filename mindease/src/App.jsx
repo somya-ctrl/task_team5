@@ -16,6 +16,8 @@ import Profile from './pages/Profile'
 import MiniQuizzes from "./pages/MiniQuizzes";
 import Aboutus from "../src/pages/About"
 import Chatbot from "./pages/Chatbot";
+import Result from "./pages/Result";
+
 
 const App = () => {
   return (
@@ -93,6 +95,9 @@ const App = () => {
           }
         />
         <Route path="/chatbot" element={<Chatbot />} />
+
+        <Route path="/result" element={<Result />} />
+
 
         <Route
           path="/miniques"

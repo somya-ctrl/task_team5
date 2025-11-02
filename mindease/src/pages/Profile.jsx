@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { FaRegEdit, FaSave, FaUser } from "react-icons/fa";
 
 const Profile = () => {
-  // Get user data from localStorage
+  
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
 
-  // Determine name source safely (fullName > name > empty)
+  
   const fullName = storedUser.fullName || storedUser.name || "";
   const nameParts = fullName.trim().split(" ");
   const first = nameParts[0] || "";
   const last = nameParts.slice(1).join(" ") || "";
 
-  // Initialize profile fields
+  
   const [user, setUser] = useState({
     firstName: first,
     lastName: last,
@@ -85,92 +85,80 @@ const Profile = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-6">
 
-            <div>
-              <p className="text-gray-600 font-semibold">First Name</p>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="firstName"
-                  value={user.firstName}
-                  onChange={handleChange}
-                  className="border p-2 rounded w-full"
-                />
-              ) : (
-                <p className="font-medium">{user.firstName}</p>
-              )}
-            </div>
+  <div>
+    <p className="text-gray-600 font-semibold">First Name</p>
+    <p className="font-medium">{user.firstName}</p>
+  </div>
 
-            <div>
-              <p className="text-gray-600 font-semibold">Last Name</p>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="lastName"
-                  value={user.lastName}
-                  onChange={handleChange}
-                  className="border p-2 rounded w-full"
-                />
-              ) : (
-                <p className="font-medium">{user.lastName}</p>
-              )}
-            </div>
+  <div>
+    <p className="text-gray-600 font-semibold">Last Name</p>
+    <p className="font-medium">{user.lastName}</p>
+  </div>
 
-            <div>
-              <p className="text-gray-600 font-semibold">Gender</p>
-              {isEditing ? (
-                <select
-                  name="gender"
-                  value={user.gender}
-                  onChange={handleChange}
-                  className="border p-2 rounded w-full"
-                >
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-              ) : (
-                <p className="font-medium">{user.gender}</p>
-              )}
-            </div>
+  <div>
+    <p className="text-gray-600 font-semibold">Gender</p>
+    {isEditing ? (
+      <select
+        name="gender"
+        value={user.gender}
+        onChange={handleChange}
+        className="border p-2 rounded w-full"
+      >
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+    ) : (
+      <p className="font-medium">{user.gender}</p>
+    )}
+  </div>
 
-            <div>
-              <p className="text-gray-600 font-semibold">Phone No</p>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="phone"
-                  value={user.phone}
-                  onChange={handleChange}
-                  className="border p-2 rounded w-full"
-                />
-              ) : (
-                <p className="font-medium">{user.phone}</p>
-              )}
-            </div>
+  <div>
+    <p className="text-gray-600 font-semibold">Phone No</p>
+    {isEditing ? (
+     <input
+  type="text"
+  name="phone"
+  value={user.phone}
+  onChange={(e) => {
+    const value = e.target.value.replace(/\D/g, ""); 
+    if (value.length <= 10) {
+      setUser({ ...user, phone: value });
+    }
+  }}
+  maxLength={10}
+  className="border p-2 rounded w-full"
+/>
 
-            <div>
-              <p className="text-gray-600 font-semibold">Age</p>
-              {isEditing ? (
-                <input
-                  type="number"
-                  name="age"
-                  value={user.age}
-                  onChange={handleChange}
-                  className="border p-2 rounded w-full"
-                />
-              ) : (
-                <p className="font-medium">{user.age}</p>
-              )}
-            </div>
+    ) : (
+      <p className="font-medium">{user.phone}</p>
+    )}
+  </div>
 
-            <div>
-              <p className="text-gray-600 font-semibold">Email</p>
-              <p className="font-medium">{user.email}</p>
-            </div>
+  <div>
+    <p className="text-gray-600 font-semibold">Age</p>
+    {isEditing ? (
+      <input
+        type="number"
+        name="age"
+        value={user.age}
+        onChange={handleChange}
+        className="border p-2 rounded w-full"
+      />
+    ) : (
+      <p className="font-medium">{user.age}</p>
+    )}
+  </div>
 
-          </div>
+  <div>
+    <p className="text-gray-600 font-semibold">Email</p>
+    <p className="font-medium">{user.email}</p>
+  </div>
+
+</div>
+
         </div>
       </div>
     </div>

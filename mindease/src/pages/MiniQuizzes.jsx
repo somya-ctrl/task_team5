@@ -29,7 +29,10 @@ const MiniQuizzes = () => {
   };
 
   const handleNext = () => {
-    if (!answers[currentIndex]) return alert("Please answer before continuing.");
+    if (!answers[currentIndex]) {
+      alert("Please answer before continuing.");
+      return;
+    }
     setCurrentIndex((prev) => prev + 1);
   };
 
@@ -38,12 +41,45 @@ const MiniQuizzes = () => {
   };
 
   const handleSubmit = async () => {
-    if (!answers[currentIndex]) return alert("Please answer before submitting.");
+    if (
+      answers.length !== questions.length ||
+      answers.includes(undefined) ||
+      answers.includes("")
+    ) {
+      alert("Please answer all questions before submitting.");
+      return;
+    }
+
+    
+    const fixedAnswers = [...answers];
+    fixedAnswers[0] = Number(fixedAnswers[0]);
+
+    
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to submit.");
+      return;
+    }
+
     try {
-      await axios.post("https://mindease-backend-cyvy.onrender.com/submit", { answers });
+      console.log("Sending to backend:", fixedAnswers);
+
+      const response = await axios.post(
+        "https://mindease-backend-cyvy.onrender.com/submit",
+        { answers: fixedAnswers },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Submit Success:", response.data);
       navigate("/result");
-    } catch (error) {
-      alert("Server error. Try again later.");
+    } catch (err) {
+      console.log("Submit Error:", err.response?.data || err.message);
+      alert(err.response?.data?.error || "Submission failed. Try again.");
     }
   };
 
@@ -55,7 +91,6 @@ const MiniQuizzes = () => {
   return (
     <div className="min-h-screen bg-backg flex flex-col items-center pt-50 px-4">
 
-      
       <div className="w-full max-w-3xl flex justify-between items-center mb-2 px-2">
         <p className="text-lg font-semibold text-darkblue">
           Question {currentIndex + 1} of {questions.length}
@@ -65,7 +100,6 @@ const MiniQuizzes = () => {
         </p>
       </div>
 
-  
       <div className="w-full max-w-3xl h-3 bg-lightgrey rounded-full mb-6 overflow-hidden">
         <div
           className="h-full bg-lightgreen transition-all duration-300"
@@ -73,20 +107,22 @@ const MiniQuizzes = () => {
         ></div>
       </div>
 
-    
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-8 border border-lightgrey">
         <p className="text-xl font-medium text-darkblue mb-6">
           {currentQuestion.questiontext}
         </p>
 
-      
         {currentQuestion.options ? (
           <div className="space-y-4">
             {currentQuestion.options.map((opt, idx) => (
               <label
                 key={idx}
                 className={`block border rounded-lg px-4 py-3 cursor-pointer transition
-                ${answers[currentIndex] === opt ? "border-lightgreen bg-lightgrey" : "border-lightgrey"}`}
+                ${
+                  answers[currentIndex] === opt
+                    ? "border-lightgreen bg-lightgrey"
+                    : "border-lightgrey"
+                }`}
               >
                 <input
                   type="radio"
@@ -111,7 +147,6 @@ const MiniQuizzes = () => {
         )}
       </div>
 
-      
       <div className="w-full max-w-3xl flex justify-between items-center mt-6">
         {currentIndex > 0 ? (
           <button
@@ -120,7 +155,9 @@ const MiniQuizzes = () => {
           >
             Previous
           </button>
-        ) : <div></div> }
+        ) : (
+          <div></div>
+        )}
 
         {currentIndex === questions.length - 1 ? (
           <button
@@ -140,7 +177,7 @@ const MiniQuizzes = () => {
       </div>
 
       <p className="text-center text-sm text-darkblue mt-8">
-        Our responses are confidential and will help us provide personalized support.
+        Your responses are confidential and help us provide personalized support.
       </p>
     </div>
   );
