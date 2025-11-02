@@ -60,4 +60,13 @@ def chat_with_documents(request: ChatRequest):
         import traceback
         print("ERROR in /doc-chat route:")
         traceback.print_exc()
-        return {"error": str(e)} 
+        return {"error": str(e)}
+
+
+# 🔹 Add this block at the end to make it work on Render:
+if __name__ == "__main__":
+    import os
+    import uvicorn
+
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
