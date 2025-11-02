@@ -1,10 +1,9 @@
 import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
-
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_classic.chains import LLMChain
+from langchain_classic.memory import ConversationBufferMemory   
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,12 +28,12 @@ def get_response(session_id: str, user_query: str) -> str:
         # Memory for conversation context
         memory = ConversationBufferMemory(memory_key="chat_history")
 
-        # Simple chat prompt
-        prompt = PromptTemplate(
-            input_variables=["chat_history", "user_input"],
-            template="{chat_history}\nUser: {user_input}\nAI:"
+        # Updated prompt template
+        prompt = ChatPromptTemplate.from_template(
+            "{chat_history}\nUser: {user_input}\nAI:"
         )
 
+        # Build the LLM chain
         chain = LLMChain(llm=llm, prompt=prompt, memory=memory, verbose=True)
         session_memory_map[session_id] = chain
 

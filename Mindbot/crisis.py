@@ -2,18 +2,13 @@
 
 from typing import List
 
-# -------------------------------
-# List of crisis-related keywords
-# -------------------------------
 CRISIS_KEYWORDS: List[str] = [
     "suicidal", "suicide", "kill myself", "want to die",
     "hopeless", "worthless", "can't go on", "give up",
     "ending it all", "no reason to live", "end my life"
 ]
 
-# -------------------------------------------------------
 # Safe, supportive message with verified helpline numbers
-# -------------------------------------------------------
 SAFETY_MESSAGE = (
     "💙 It seems like you might be going through a very difficult time right now.\n"
     "You're not alone, and it’s okay to reach out for help.\n\n"
@@ -26,9 +21,7 @@ SAFETY_MESSAGE = (
     "You matter, and help is available. 💙"
 )
 
-# -------------------------------------------------------
 # Function to detect crisis-related phrases
-# -------------------------------------------------------
 def contains_crisis_keywords(text: str) -> bool:
     """
     Checks if the user's text contains any crisis-related words.
