@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from models import ChatRequest
-from chat_engine import get_response  
+from chat_engine import get_response
 from logger import log_chat
 from crisis import contains_crisis_keywords, SAFETY_MESSAGE
 from doc_engine import query_documents
@@ -41,10 +41,23 @@ def chat_with_memory(request: ChatRequest):
 
     response = get_response(session_id, user_query)
     log_chat(session_id, user_query, response, is_crisis=False)
-    return {"response": response} 
+    return {"response": response}
 
 
+# 🔹 Debugging-enabled version of /doc-chat
 @app.post("/doc-chat")
 def chat_with_documents(request: ChatRequest):
-    response = query_documents(request.query)
-    return {"response": response} 
+    try:
+        print("User query received:", request.query)
+
+        response = query_documents(request.query)
+
+        print("Response from query_documents:", response)
+
+        return {"response": str(response)}
+
+    except Exception as e:
+        import traceback
+        print("ERROR in /doc-chat route:")
+        traceback.print_exc()
+        return {"error": str(e)} 
