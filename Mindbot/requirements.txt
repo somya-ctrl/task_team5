@@ -1,0 +1,36 @@
+# Core AI and NLP frameworks
+openai
+langchain>=1.0.3
+langchain-openai
+llama-index
+haystack
+
+# Backend server
+fastapi
+uvicorn
+
+# Utilities
+requests
+python-dotenv
+
+# Data handling and embeddings
+pandas
+numpy
+tiktoken
+
+# Optional AI agent frameworks (if you plan to expand)
+autogen
+
+# Logging and safety
+loguru
+# File reading / document handling for RAG
+PyPDF2
+python-docx
+# Optional (if using sentence embeddings)
+sentence-transformers
+
+# CORS for frontend-backend connection
+starlette
+
+
+
