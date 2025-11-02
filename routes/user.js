@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz} = require('../controllers/user');
+const { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz,createJournal,getUserJournals} = require('../controllers/user');
 const { getGoogleAuthURL, handleGoogleCallback } = require('../auth/google');
 
 router.post('/signup', createUser);
@@ -17,5 +17,7 @@ router.get('/auth/google/error', (req, res) => {
 router.get("/quiz",createquiz);
 router.post("/submit",verifyToken, submitquiz);
 router.get("/result",verifyToken, getQuizResult);
+router.post('/journal', verifyToken, createJournal);
+router.get('/getjournal', verifyToken, getUserJournals);
 
 module.exports = router;

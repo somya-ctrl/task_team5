@@ -4,6 +4,7 @@ const axios = require("axios");
 let lastResult = null; 
 const User = require('../models/user');
 const Quiz = require('../models/quiz');
+const Journal = require('../models/journal');
 const questions = require('../questions/ques');
 const jwt = require('jsonwebtoken');
 async function createUser(req, res) {
@@ -154,7 +155,7 @@ async function getQuizResult(req, res) {
 
   
     const formatted = quizzes.map((quiz) => {
-      const a = quiz.answers; // array
+      const a = quiz.answers; 
       return {
         _id: quiz._id,
         createdAt: quiz.createdAt,
@@ -195,5 +196,36 @@ async function getQuizResult(req, res) {
   }
 }
 
+async function createJournal(req, res) {
+  try {
+    const { content } = req.body;
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz }; 
+    if (!content) {
+      return res.status(400).json({ error: 'Content is required' });
+    }
+
+    const journal = new Journal({
+      user: req.user.id,  
+      content,
+    });
+
+    await journal.save();
+    res.status(201).json({ success: true, journal });
+  } catch (error) {
+    console.error('Error creating journal:', error.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+async function getUserJournals(req, res) {
+  try {
+    const journals = await Journal.find({ user: req.user.id }).sort({ date: -1 });
+    res.json({ success: true, journals });
+  } catch (error) {
+    console.error('Error fetching journals:', error.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals}; 
