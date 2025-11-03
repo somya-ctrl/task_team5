@@ -1,40 +1,40 @@
+# === main.py ===
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
+import os
+import uvicorn
 
+# Import your existing working modules
 from models import ChatRequest
 from chat_engine import get_response
 from logger import log_chat
 from crisis import contains_crisis_keywords, SAFETY_MESSAGE
 from doc_engine import query_documents
 
-# Load environment variables
-load_dotenv()
+# === Initialize FastAPI app ===
+app = FastAPI(title="Mindbot API", version="1.0")
 
-# Initialize FastAPI app
-app = FastAPI()
-
-# Allow all CORS origins (for frontend connection)
+# === CORS settings (important for frontend connection) ===
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],   # You can later replace "*" with your frontend URL for security
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
+# === Root endpoint (Render will use this for health check) ===
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to the AI-Powered Mental Health Chatbot!"}
+def home():
+    return {"message": "Mindbot API is running successfully!"}
 
-
+# === Chat endpoint ===
 @app.post("/chat")
 def chat_with_memory(request: ChatRequest):
     session_id = request.session_id
     user_query = request.query
 
-    # Crisis keyword check
+    # Crisis detection
     if contains_crisis_keywords(user_query):
         log_chat(session_id, user_query, SAFETY_MESSAGE, is_crisis=True)
         return {"response": SAFETY_MESSAGE}
@@ -43,30 +43,16 @@ def chat_with_memory(request: ChatRequest):
     log_chat(session_id, user_query, response, is_crisis=False)
     return {"response": response}
 
-
-# 🔹 Debugging-enabled version of /doc-chat
+# === Document chatbot endpoint ===
 @app.post("/doc-chat")
 def chat_with_documents(request: ChatRequest):
     try:
-        print("User query received:", request.query)
-
         response = query_documents(request.query)
-
-        print("Response from query_documents:", response)
-
         return {"response": str(response)}
-
     except Exception as e:
-        import traceback
-        print("ERROR in /doc-chat route:")
-        traceback.print_exc()
         return {"error": str(e)}
 
-
-# 🔹 Add this block at the end to make it work on Render:
 if __name__ == "__main__":
-    import os
-    import uvicorn
-
-    port = int(os.environ.get("PORT", 8000))
+    port = 8090  
+    print(f"🚀 Running on http://127.0.0.1:{port}")
     uvicorn.run("main:app", host="0.0.0.0", port=port)
