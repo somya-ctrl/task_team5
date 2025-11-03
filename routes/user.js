@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz,createJournal,getUserJournals} = require('../controllers/user');
+const { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz,createJournal,getUserJournals,firebaseLogin} = require('../controllers/user');
 const { getGoogleAuthURL, handleGoogleCallback } = require('../auth/google');
 
 router.post('/signup', createUser);
 router.post('/login', login);
 
-
+router.post('/firebase-login', firebaseLogin);
 router.get('/auth/google', getGoogleAuthURL);
 router.get('/auth/google/callback', handleGoogleCallback);
 

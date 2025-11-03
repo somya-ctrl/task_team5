@@ -7,6 +7,7 @@ const Quiz = require('../models/quiz');
 const Journal = require('../models/journal');
 const questions = require('../questions/ques');
 const jwt = require('jsonwebtoken');
+const admin = require("firebase-admin");
 async function createUser(req, res) {
    
     try {
@@ -57,6 +58,46 @@ const verifyToken = async (req, res, next) => {
         res.status(401).json({ error: 'Invalid token' });
     }
 };
+async function firebaseLogin(req, res) {
+  try {
+    const { firebaseToken } = req.body;
+    if (!firebaseToken) {
+      return res.status(400).json({ error: 'Firebase token is required' });
+    }
+
+    const decodedToken = await admin.auth().verifyIdToken(firebaseToken);
+    const { uid, email, name, picture } = decodedToken;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({
+        name: name || 'Firebase User',
+        email,
+        password: '',
+        firebaseUid: uid,
+        profilePic: picture,
+      });
+      await user.save();
+    }
+
+   
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Firebase login successful',
+      token,
+      user: { id: user._id, name: user.name, email: user.email, picture: user.profilePic },
+    });
+  } catch (error) {
+    console.error('Firebase login error:', error.message);
+    res.status(401).json({ error: 'Invalid Firebase token' });
+  }
+}
 const createquiz = async (req, res) => {
   try {
     res.json({
@@ -228,4 +269,4 @@ async function getUserJournals(req, res) {
 };
 
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals}; 
+module.exports = { createUser, login, verifyToken,firebaseLogin, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals}; 
