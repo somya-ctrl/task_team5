@@ -23,14 +23,13 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Redirect root to login */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        
+        <Route path="/" element={<Navigate to="/" />} />
 
-        {/* Auth routes */}
+        
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Main app routes with Navbar + Footer */}
         <Route
           path="/dashboard"
           element={

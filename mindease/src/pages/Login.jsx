@@ -23,21 +23,21 @@ const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
   e.preventDefault();
   setError("");
 
-  // Email must start with a letter + valid format
+  
   const emailRegex = /^[A-Za-z][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
   if (!emailRegex.test(formData.email)) {
     setError("Please enter a valid email that starts with a letter.");
     return;
   }
 
-  // Password must have at least one special character
+  
   const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
   if (!specialCharRegex.test(formData.password)) {
     setError("Password must contain at least one special character.");
     return;
   }
 
-  // Minimum password length
+  
   if (formData.password.length < 6) {
     setError("Password must be at least 6 characters long.");
     return;
@@ -141,7 +141,7 @@ const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
           <div className="flex-grow border-t border-darkblue"></div>
         </div>
 
-        {/* Google Login */}
+      
         <button
           onClick={handleGoogleLogin}
           className="w-full border border-darkblue bg-aquaGlow text-white py-2 rounded font-semibold flex items-center justify-center gap-3 hover:bg-pinkGlow  transition"

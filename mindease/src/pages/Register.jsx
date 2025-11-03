@@ -20,41 +20,39 @@ const Register = () => {
   e.preventDefault();
   setError("");
 
-  // Name: Only letters & spaces allowed
   const nameRegex = /^[A-Za-z ]+$/;
   if (!nameRegex.test(formData.name.trim())) {
     setError("Name should only contain letters and spaces.");
     return;
   }
 
-  // Email must start with a letter + follow standard email format
+ 
   const emailRegex = /^[A-Za-z][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
   if (!emailRegex.test(formData.email)) {
     setError("Please enter a valid email that starts with a letter.");
     return;
   }
 
-  // ✅ ALLOW ONLY GMAIL
+ 
   const allowedDomainRegex = /^[A-Za-z0-9._%+-]+@gmail\.com$/;
   if (!allowedDomainRegex.test(formData.email)) {
     setError("Only Gmail addresses are allowed.");
     return;
   }
 
-  // Password must contain at least one special character
   const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
   if (!specialCharRegex.test(formData.password)) {
     setError("Password must contain at least one special character.");
     return;
   }
 
-  // Password length
+ 
   if (formData.password.length < 6) {
     setError("Password must be at least 6 characters long.");
     return;
   }
 
-  // Confirm password match
+ 
   if (formData.password !== formData.confirmPassword) {
     setError("Passwords do not match.");
     return;

@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { FaRegEdit, FaSave, FaUser } from "react-icons/fa";
+import { FaRegEdit, FaSave, FaUser,FaSignOutAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   
+
+  const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
 
   
@@ -39,6 +42,13 @@ const Profile = () => {
     setIsEditing(false);
   };
 
+    const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token"); 
+     navigate("/login", { replace: true }); 
+  };
+
+
   return (
      <div className="relative min-h-screen flex items-center justify-center">
     
@@ -69,6 +79,14 @@ const Profile = () => {
           >
             {isEditing ? "Cancel" : "Edit"} <FaRegEdit size={16} />
           </button>
+
+            
+    <button
+      onClick={handleLogout}
+      className="bg-red-500 text-white px-5 py-2 rounded-full hover:bg-red-600 transition"
+    >
+       <FaSignOutAlt size={20} /> 
+    </button>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6 mt-8">

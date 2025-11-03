@@ -10,7 +10,7 @@ const Navbar = () => {
     <>
       <header className="fixed top-0 left-0 w-full z-50 bg-backg shadow-md border-b-4 border-darkblue ">
         <nav className="max-w-6xl mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
-          <Link to="/" className="text-3xl font-bold flex items-center">
+          <Link to="/dashboard" className="text-3xl font-bold flex items-center">
             <span className="text-darkblue">Mind</span>
             <span className="text-aquaGlow">Ease</span>
           </Link>

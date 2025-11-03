@@ -91,7 +91,7 @@ export default function Result() {
       </div>
 
       <p className="mt-6 text-sm text-gray-600 max-w-md text-center">
-        Thank you for completing the assessment 💛
+        Thank you for completing the assessment 
       </p>
 
     </div>

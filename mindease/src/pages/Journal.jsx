@@ -11,7 +11,7 @@ export const Journal = () => {
     if (!journalText.trim()) return;
 
     try {
-      await axios.post("https://your-backend-url/api/analyze", {
+      await axios.post("https://mindease-backend-cyvy.onrender.com/journal", {
         text: journalText,
       });
 
@@ -27,8 +27,7 @@ export const Journal = () => {
     if (!journalText.trim()) return;
 
     try {
-      await axios.post("https://your-backend-url/api/mood", {
-        text: journalText,
+      await axios.post("https://mindease-backend-cyvy.onrender.com/journal", {
         mood: mood,
       });
 
