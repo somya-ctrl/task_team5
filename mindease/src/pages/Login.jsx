@@ -66,21 +66,26 @@ const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
 
 
   
-  const handleGoogleLogin = async () => {
-    setError("");
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const userData = {
-        name: result.user.displayName,
-        email: result.user.email,
-      };
+ const handleGoogleLogin = async () => {
+  setError("");
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const token = await result.user.getIdToken();
 
-      localStorage.setItem("user", JSON.stringify(userData));
-      navigate("/dashboard");
-    } catch (error) {
-      setError("Google Login failed");
-    }
-  };
+    const userData = {
+      name: result.user.displayName,
+      email: result.user.email,
+      photo: result.user.photoURL
+    };
+
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
+
+    navigate("/dashboard", { replace: true });
+  } catch (error) {
+    setError("Google Login failed");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-backg relative overflow-hidden">

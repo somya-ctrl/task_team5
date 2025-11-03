@@ -1,117 +1,152 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-
-
 import Dashboard from "./pages/Dashboard";
 import Journal from "./pages/Journal";
 import Meditations from "./pages/Meditations";
 import MoodDetection from "./pages/MoodDetection";
-import Profile from './pages/Profile'
+import Profile from "./pages/Profile";
 import MiniQuizzes from "./pages/MiniQuizzes";
-import Aboutus from "../src/pages/About"
+import Aboutus from "./pages/About";
 import Chatbot from "./pages/Chatbot";
 import Result from "./pages/Result";
 
+// ✅ Private Route
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" replace />;
+};
 
-const App = () => {
+// ✅ Wrapper to control back navigation
+const AppWrapper = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleBackButton = () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.history.pushState(null, "", window.location.href);
+        navigate("/login", { replace: true });
+      }
+    };
+
+    window.addEventListener("popstate", handleBackButton);
+    return () => window.removeEventListener("popstate", handleBackButton);
+  }, [navigate]);
+
   return (
-    <Router>
-      <Routes>
-        
-        <Route path="/" element={<Navigate to="/login" />} />
+    <Routes>
 
-        
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Navigate to="/login" />} />
 
-        <Route
-          path="/dashboard"
-          element={
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
             <>
               <Navbar />
               <Dashboard />
               <Footer />
             </>
-          }
-        />
-        <Route
-          path="/journal"
-          element={
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/journal"
+        element={
+          <PrivateRoute>
             <>
               <Navbar />
               <Journal />
               <Footer />
             </>
-          }
-        />
-        <Route
-          path="/meditations"
-          element={
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/meditations"
+        element={
+          <PrivateRoute>
             <>
               <Navbar />
               <Meditations />
               <Footer />
             </>
-          }
-        />
-        <Route
-          path="/mooddetection"
-          element={
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/mooddetection"
+        element={
+          <PrivateRoute>
             <>
               <Navbar />
               <MoodDetection />
               <Footer />
             </>
-          }
-        />
+          </PrivateRoute>
+        }
+      />
 
-  <Route
-          path="/profile"
-          element={
+      <Route
+        path="/profile"
+        element={
+          <PrivateRoute>
             <>
-              
-              <Profile/>
+            
+              <Profile />
               
             </>
-          }
-        />
+          </PrivateRoute>
+        }
+      />
 
+      <Route
+        path="/about"
+        element={
+          <>
+            <Navbar />
+            <Aboutus />
+            <Footer />
+          </>
+        }
+      />
 
-  <Route
-          path="/about"
-          element={
+      <Route
+        path="/miniques"
+        element={
+          <PrivateRoute>
             <>
               <Navbar />
-              <Aboutus/>
-              <Footer />
-            </>
-          }
-        />
-        <Route path="/chatbot" element={<Chatbot />} />
-
-        <Route path="/result" element={<Result />} />
-
-
-        <Route
-          path="/miniques"
-          element={
-            <>
-              <Navbar/>
               <MiniQuizzes />
-              
             </>
-          }
-        />
-      </Routes>
-    </Router>
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="/chatbot" element={<Chatbot />} />
+      <Route path="/result" element={<Result />} />
+
+    </Routes>
   );
 };
+
+const App = () => (
+  <Router>
+    <AppWrapper />
+  </Router>
+);
 
 export default App;
 
