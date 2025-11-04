@@ -40,7 +40,7 @@ const handleLogout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
 
-  // Clear browser history state so back button won't return to previous page
+
   window.history.pushState(null, "", window.location.href);
   window.addEventListener("popstate", function () {
     window.history.pushState(null, "", window.location.href);
@@ -53,28 +53,37 @@ const handleLogout = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">
 
-      {/* Background gradients */}
+
       <div className="absolute left-0 top-0 w-1/2 h-full bg-lightgreen/40"></div>
       <div className="absolute right-0 top-0 w-1/2 h-full bg-pinkGlow/40"></div>
 
-      {/* Main Container */}
+      
       <div className="relative z-10 w-full max-w-4xl bg-backg p-4 sm:p-10 rounded-lg shadow-xl">
 
         <h1 className="text-3xl font-bold text-darkblue mb-6 text-center sm:text-left">
           My Profile
         </h1>
 
-        {/* Profile Header */}
+    
         <div className="bg-white rounded-lg p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
 
-          <div className="flex items-center gap-4">
-            <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
+        <div className="flex items-center gap-4">
 
-            <div className="text-center sm:text-left">
-              <h2 className="text-xl font-semibold">{user.fullName}</h2>
-              <p className="text-gray-600 break-all">{user.email}</p>
-            </div>
-          </div>
+  {storedUser.photo ? (
+    <img
+      src={storedUser.photo}
+      alt="profile"
+      className="w-20 h-20 rounded-full object-cover"
+    />
+  ) : (
+    <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
+  )}
+
+  <div className="text-center sm:text-left">
+    <h2 className="text-xl font-semibold">{user.fullName}</h2>
+    <p className="text-gray-600 break-all">{user.email}</p>
+  </div>
+</div>
 
           <div className="flex gap-3">
             <button
@@ -93,7 +102,6 @@ const handleLogout = () => {
           </div>
         </div>
 
-        {/* Personal Info Form */}
         <div className="bg-white rounded-lg shadow-md p-6 mt-8">
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -109,7 +117,6 @@ const handleLogout = () => {
             )}
           </div>
 
-          {/* Responsive Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
             <div>

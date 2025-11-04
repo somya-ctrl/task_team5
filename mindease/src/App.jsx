@@ -15,14 +15,14 @@ import MiniQuizzes from "./pages/MiniQuizzes";
 import Aboutus from "./pages/About";
 import Chatbot from "./pages/Chatbot";
 import Result from "./pages/Result";
+import GoogleCallback from "./pages/GoogleCallback"; 
 
-// ✅ Private Route
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" replace />;
 };
 
-// ✅ Wrapper to control back navigation
+
 const AppWrapper = () => {
   const navigate = useNavigate();
 
@@ -46,6 +46,8 @@ const AppWrapper = () => {
 
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+
+      <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
       <Route
         path="/dashboard"
@@ -104,9 +106,7 @@ const AppWrapper = () => {
         element={
           <PrivateRoute>
             <>
-            
               <Profile />
-              
             </>
           </PrivateRoute>
         }
@@ -135,8 +135,33 @@ const AppWrapper = () => {
         }
       />
 
-      <Route path="/chatbot" element={<Chatbot />} />
-      <Route path="/result" element={<Result />} />
+    
+      <Route
+        path="/chatbot"
+        element={
+          <PrivateRoute>
+            <>
+              <Navbar />
+              <Chatbot />
+              <Footer />
+            </>
+          </PrivateRoute>
+        }
+      />
+
+      
+      <Route
+        path="/result"
+        element={
+          <PrivateRoute>
+            <>
+              <Navbar />
+              <Result />
+              <Footer />
+            </>
+          </PrivateRoute>
+        }
+      />
 
     </Routes>
   );
@@ -149,4 +174,3 @@ const App = () => (
 );
 
 export default App;
-
