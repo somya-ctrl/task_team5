@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const axios = require("axios");
+let lastResult = null;
 
-let lastResult = null; 
 const User = require('../models/user');
 const Quiz = require('../models/quiz');
 const Journal = require('../models/journal');
@@ -267,6 +267,30 @@ async function getUserJournals(req, res) {
     res.status(500).json({ error: 'Server error' });
   }
 };
+const editUser = async (req, res) => {
+  try {
+    const { gender, age, phone } = req.body;
+    const userId = req.user.id; 
 
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { gender, age, phone },
+      { new: true, runValidators: true }
+    );
 
-module.exports = { createUser, login, verifyToken,firebaseLogin, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals}; 
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('Edit user error:', error.message);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { createUser, login, verifyToken,firebaseLogin, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser }; 
