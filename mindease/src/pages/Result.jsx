@@ -1,51 +1,10 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Result() {
+  const location = useLocation();
   const navigate = useNavigate();
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchResult = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          "https://mindease-backend-cyvy.onrender.com/result",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setResult(response.data); 
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching result:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchResult();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-backg">
-        <p className="text-lg text-darkblue animate-pulse">
-          Fetching your result...
-        </p>
-      </div>
-    );
-  }
+  const [result] = useState(location.state);
 
   if (!result) {
     return (
@@ -56,7 +15,7 @@ export default function Result() {
   }
 
   return (
-    <div className="min-h-screen bg-backg flex flex-col items-center py-12 px-4">
+    <div className="min-h-screen bg-backg flex flex-col items-center py-50 px-4">
 
       <div className="bg-white rounded-2xl shadow-md max-w-xl w-full p-8 text-center border border-lightgrey">
         
@@ -64,19 +23,16 @@ export default function Result() {
           Your Mental Wellness Result
         </h2>
 
-        <div className="w-20 h-1 bg-lightgreen mx-auto rounded-full mb-6"></div>
+        <div className="w-20 h-1 bg-lightgreen mx-auto rounded-full mb-6" />
 
-        
         <p className="text-lg font-semibold text-darkblue mb-3">
           {result.score_text}
         </p>
 
-      
         <p className="text-md text-gray-700 mb-4">
           {result.prediction}
         </p>
 
-        
         <div className="bg-lightgrey py-3 rounded-xl text-darkblue font-semibold text-lg mb-6">
           Score: {result.score}
         </div>
@@ -91,7 +47,7 @@ export default function Result() {
       </div>
 
       <p className="mt-6 text-sm text-gray-600 max-w-md text-center">
-        Thank you for completing the assessment 
+        Thank you for completing the assessment
       </p>
 
     </div>

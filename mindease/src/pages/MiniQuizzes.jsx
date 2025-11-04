@@ -76,7 +76,8 @@ const MiniQuizzes = () => {
       );
 
       console.log("Submit Success:", response.data);
-      navigate("/result");
+      navigate("/result", { state: response.data.result });
+
     } catch (err) {
       console.log("Submit Error:", err.response?.data || err.message);
       alert(err.response?.data?.error || "Submission failed. Try again.");
