@@ -75,8 +75,7 @@ const handleGoogleCallback = async (req, res) => {
     const photo = data.picture || '';
 
 
-  const frontendRedirect = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/google/callback?` +
-  `token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&photo=${encodeURIComponent(photo)}`;
+  const frontendRedirect = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/google/callback?`+`token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&photo=${encodeURIComponent(photo)}`;
 
     return res.redirect(frontendRedirect);
   } catch (error) {

@@ -189,65 +189,46 @@ async function getQuizResult(req, res) {
   try {
     const userId = req.user.id;
 
-    
-    const quizzes = await Quiz.find({ user: userId })
+    const latestQuiz = await Quiz.findOne({ user: userId })
       .sort({ createdAt: -1 })
-      .select("answers prediction probability score_text score createdAt");
+      .select("prediction probability score_text score");
 
-  
-    const formatted = quizzes.map((quiz) => {
-      const a = quiz.answers; 
-      return {
-        _id: quiz._id,
-        createdAt: quiz.createdAt,
-        prediction: quiz.prediction,
-        probability: quiz.probability,
-        score_text: quiz.score_text,
-        score: quiz.score,
-        inputData: {
-          Age: a[0],
-          Gender: a[1],
-          Country: a[2],
-          self_employed: a[3],
-          family_history: a[4],
-          no_employees: a[5],
-          remote_work: a[6],
-          tech_company: a[7],
-          benefits: a[8],
-          care_options: a[9],
-          wellness_program: a[10],
-          seek_help: a[11],
-          anonymity: a[12],
-          mental_health_consequence: a[13],
-          phys_health_consequence: a[14],
-          coworkers: a[15],
-          supervisor: a[16],
-          mental_health_interview: a[17],
-          phys_health_interview: a[18],
-          mental_vs_physical: a[19],
-          obs_consequence: a[20],
-        },
-      };
+    if (!latestQuiz) {
+      return res.status(404).json({ success: false, message: "No quiz found" });
+    }
+
+    res.json({
+      success: true,
+      result: {
+        prediction: latestQuiz.prediction,
+        probability: latestQuiz.probability,
+        score_text: latestQuiz.score_text,
+        score: latestQuiz.score,
+      },
     });
-
-    res.json({ success: true, quizzes: formatted });
   } catch (error) {
     console.error("Error fetching result:", error.message);
     res.status(500).json({ error: "Server error" });
   }
 }
 
+
 async function createJournal(req, res) {
   try {
-    const { content } = req.body;
+    const { content,date } = req.body;
 
     if (!content) {
       return res.status(400).json({ error: 'Content is required' });
+    }
+    let parsedDate = new Date(date);
+    if (!date || isNaN(parsedDate)) {
+      parsedDate = new Date();
     }
 
     const journal = new Journal({
       user: req.user.id,  
       content,
+      date: parsedDate,
     });
 
     await journal.save();
@@ -257,16 +238,40 @@ async function createJournal(req, res) {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
 async function getUserJournals(req, res) {
   try {
-    const journals = await Journal.find({ user: req.user.id }).sort({ date: -1 });
-    res.json({ success: true, journals });
+    const { date } = req.query; 
+    const userId = req.user.id;
+
+    let query = { user: userId };
+
+    
+    if (date) {
+      
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      query.date = { $gte: startOfDay, $lte: endOfDay };
+    }
+
+    
+    const journals = await Journal.find(query).sort({ date: -1 });
+
+    res.json({
+      success: true,
+      count: journals.length,
+      journals,
+      filteredByDate: !!date, 
+    });
   } catch (error) {
     console.error('Error fetching journals:', error.message);
     res.status(500).json({ error: 'Server error' });
   }
-};
+}
+
 const editUser = async (req, res) => {
   try {
     const { gender, age, phone } = req.body;
