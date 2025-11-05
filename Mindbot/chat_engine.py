@@ -1,42 +1,53 @@
 import os
+from typing import List, Dict
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_classic.chains import LLMChain
-from langchain_classic.memory import ConversationBufferMemory   
+from groq import Groq
+import requests
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Get the OpenAI API key
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+API_KEY = os.getenv("GROQ_API_KEY")
+if not API_KEY:
+    raise ValueError("❌ GROQ_API_KEY missing in .env")
 
-if not OPENAI_API_KEY:
-    raise ValueError("OPENAI_API_KEY not found. Please check your .env file")
+# Groq official SDK client
+client = Groq(api_key=API_KEY)
 
-# Initialize the model
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7, api_key=OPENAI_API_KEY)
+# In-process session memory: { session_id: [messages...] }
+_session_store: Dict[str, List[Dict[str, str]]] = {}
 
-# Session memory dictionary
-session_memory_map = {}
+# Solid default chat model (fast + good quality)
+DEFAULT_MODEL = "llama-3.1-8b-instant"
+
+SYSTEM_PROMPT = (
+    "You are MindBot, a kind, non-clinical mental-health companion. "
+    "Be empathetic, concise, and avoid diagnosis. "
+    "Encourage seeking professional help when appropriate."
+)
+
+def _truncate(history: List[Dict[str, str]], max_turns: int = 12) -> List[Dict[str, str]]:
+    # keep last ~12 user+assistant exchanges (+system)
+    if not history:
+        return history
+    # leave the first message if it's system, then last 24 messages
+    head = history[:1] if history and history[0].get("role") == "system" else []
+    tail = history[-(max_turns * 2):]
+    return head + tail
+
+def _chat(messages: List[Dict[str, str]], model: str = DEFAULT_MODEL) -> str:
+    # Using Groq's OpenAI-compatible chat endpoint via SDK
+    resp = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.6,
+    )
+    return resp.choices[0].message.content.strip()
 
 def get_response(session_id: str, user_query: str) -> str:
-    """
-    Handles user queries and maintains conversation memory for each session.
-    """
-    if session_id not in session_memory_map:
-        # Memory for conversation context
-        memory = ConversationBufferMemory(memory_key="chat_history")
-
-        # Updated prompt template
-        prompt = ChatPromptTemplate.from_template(
-            "{chat_history}\nUser: {user_input}\nAI:"
-        )
-
-        # Build the LLM chain
-        chain = LLMChain(llm=llm, prompt=prompt, memory=memory, verbose=True)
-        session_memory_map[session_id] = chain
-
-    chain = session_memory_map[session_id]
-    response = chain.run(user_input=user_query)
-    return response
+    if session_id not in _session_store:
+        _session_store[session_id] = [{"role": "system", "content": SYSTEM_PROMPT}]
+    _session_store[session_id].append({"role": "user", "content": user_query})
+    history = _truncate(_session_store[session_id])
+    answer = _chat(history, model=DEFAULT_MODEL)
+    _session_store[session_id].append({"role": "assistant", "content": answer})
+    return answer

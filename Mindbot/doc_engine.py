@@ -1,62 +1,81 @@
-# === doc_engine.py ===
 import os
 from dotenv import load_dotenv
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage
-from llama_index.llms.openai import OpenAI as LlamaOpenAI
+from groq import Groq
+from PyPDF2 import PdfReader
+from docx import Document
 
-# Load environment variables
 load_dotenv()
 
-index = None
-query_engine = None
+API_KEY = os.getenv("GROQ_API_KEY")
+if not API_KEY:
+    raise ValueError("❌ GROQ_API_KEY missing in .env")
 
-def init_index():
-    """Initialize or load the index only once."""
-    global index, query_engine
+client = Groq(api_key=API_KEY)
+MODEL = "llama-3.1-8b-instant"
 
-    if index is None or query_engine is None:
+def _read_txt(path: str) -> str:
+    with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        return f.read()
+
+def _read_pdf(path: str) -> str:
+    text = []
+    with open(path, "rb") as f:
+        reader = PdfReader(f)
+        for page in reader.pages:
+            text.append(page.extract_text() or "")
+    return "\n".join(text)
+
+def _read_docx(path: str) -> str:
+    doc = Document(path)
+    return "\n".join([p.text for p in doc.paragraphs])
+
+def _ingest_data(data_dir: str = "data") -> str:
+    if not os.path.isdir(data_dir):
+        raise FileNotFoundError("data folder missing")
+    blobs = []
+    for fn in os.listdir(data_dir):
+        p = os.path.join(data_dir, fn)
+        if not os.path.isfile(p):
+            continue
+        low = fn.lower()
         try:
-            print("🔹 Initializing or loading document index...")
-            api_key = os.getenv("OPENAI_API_KEY")
-            if not api_key:
-                raise ValueError("❌ Missing OpenAI API key in .env file")
+            if low.endswith(".txt"):
+                blobs.append(_read_txt(p))
+            elif low.endswith(".pdf"):
+                blobs.append(_read_pdf(p))
+            elif low.endswith(".docx"):
+                blobs.append(_read_docx(p))
+        except Exception:
+            continue
+    return "\n\n".join([b for b in blobs if b.strip()])
 
-            llama_llm = LlamaOpenAI(
-                model="gpt-4-turbo",
-                api_key=api_key
-            )
+def _chat(messages):
+    resp = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+        temperature=0.3,
+    )
+    return resp.choices[0].message.content.strip()
 
-            # Folder to store embeddings
-            storage_dir = "storage"
-
-            # If previously built, just load it
-            if os.path.exists(storage_dir):
-                print("✅ Loading existing document index from storage...")
-                storage_context = StorageContext.from_defaults(persist_dir=storage_dir)
-                index = load_index_from_storage(storage_context)
-            else:
-                print("🧠 Building new document index...")
-                documents = SimpleDirectoryReader("data").load_data()
-                index = VectorStoreIndex.from_documents(documents)
-                index.storage_context.persist(persist_dir=storage_dir)
-
-            query_engine = index.as_query_engine(llm=llama_llm)
-            print("✅ Document index ready!")
-
-        except Exception as e:
-            print(f"🚨 Error initializing doc engine: {e}")
-            raise e
-
-
-def query_documents(user_query: str):
-    """Safely query uploaded documents."""
+def query_documents(user_query: str) -> str:
     try:
-        if not user_query.strip():
-            return "⚠️ Please provide a valid question."
+        corpus = _ingest_data("data")
+        if not corpus.strip():
+            return "📁 No readable documents found in 'data/' (supported: .txt, .pdf, .docx)."
 
-        init_index()
-        response = query_engine.query(user_query)
-        return str(response)
-
+        system = (
+            "You are MindBot. Answer ONLY using the provided documents. "
+            "If the answer is not present, say you don't have enough information."
+        )
+        prompt = (
+            f"=== DOCUMENTS START ===\n{corpus}\n=== DOCUMENTS END ===\n\n"
+            f"Question: {user_query}"
+        )
+        return _chat([
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ])
+    except FileNotFoundError:
+        return "📁 'data/' folder not found."
     except Exception as e:
         return f"⚠️ Document query failed: {e}"

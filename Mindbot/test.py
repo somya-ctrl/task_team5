@@ -1,7 +1,11 @@
+import os
+from dotenv import load_dotenv
 from chat_engine import get_response
 
-session_id = "test_001"
-query = "I am feeling it's over , i am feeling worthless now"
+load_dotenv()
+print("Key prefix:", (os.getenv("GROQ_API_KEY") or "")[:4] + "...")
 
-response = get_response(session_id, query)
-print("AI Response:", response)
+session_id = "test_001"
+query = "I feel overwhelmed. Give me two gentle, practical coping tips."
+resp = get_response(session_id, query)
+print("\nAI Response:\n", resp)

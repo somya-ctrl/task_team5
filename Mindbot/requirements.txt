@@ -1,38 +1,10 @@
-# === Core Framework ===
 fastapi>=0.115,<0.122
 uvicorn>=0.30,<0.39
 python-dotenv>=1.0
+requests>=2.32
+groq>=0.9.0
 
-# === LangChain / OpenAI ===
-langchain-openai>=0.1,<2.0
-
-# === ML / NLP Tools ===
-numpy>=1.26
-scikit-learn>=1.5
-scipy>=1.13
-pandas>=2.2
-nltk>=3.9
-sentence-transformers>=3.0
-transformers>=4.44
-torch>=2.3,<3.0   # lighter, GPU optional
-
-# === Document Parsing ===
 PyPDF2>=3.0
 python-docx>=1.0
-beautifulsoup4>=4.12
-lxml>=5.3
-striprtf>=0.0.26
-
-# === Logging & Utilities ===
 loguru>=0.7
-tqdm>=4.66
-requests>=2.31
 pydantic>=2.7
-
-# === LlamaIndex (for doc engine) ===
-llama-index>=0.11
-llama-parse>=0.6
-
-# === Deployment & Async ===
-aiohttp>=3.9
-anyio>=4.4
