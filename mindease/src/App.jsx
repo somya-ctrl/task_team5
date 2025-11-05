@@ -17,6 +17,7 @@ import Chatbot from "./pages/Chatbot";
 import Result from "./pages/Result";
 import GoogleCallback from "./pages/GoogleCallback"; 
 import Profession from "./pages/Profession";
+import Chat from "./pages/Chat";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -71,6 +72,20 @@ const AppWrapper = () => {
             <>
                
               <Profession />
+              
+            </>
+          </PrivateRoute>
+        }
+      />
+
+
+ <Route
+        path="/chat"
+        element={
+          <PrivateRoute>
+            <>
+               
+              <Chat/>
               
             </>
           </PrivateRoute>

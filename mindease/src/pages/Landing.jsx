@@ -124,7 +124,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
             </div>
 
           
-            <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
+            <div  onClick={() => navigate("/chat")}  className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
               <div className="w-16 h-20 mx-auto mb-4">
                
               </div>

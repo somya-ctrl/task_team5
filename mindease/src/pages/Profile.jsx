@@ -9,7 +9,7 @@ const Profile = () => {
   const userProfession = localStorage.getItem("profession") || "Not Set";
   
   const [user, setUser] = useState({
-    fullName: storedUser.fullName || storedUser.name || "",
+    fullName: storedUser.fullName || "",
     gender: storedUser.gender || "",
     age: storedUser.age || "",
     phone: storedUser.phone || "",

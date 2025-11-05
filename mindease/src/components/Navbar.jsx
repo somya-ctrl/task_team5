@@ -17,7 +17,7 @@ const Navbar = () => {
           
           <div className="hidden md:flex items-center gap-8 text-sm">
             <Link
-              to="/dashboard"
+              to="/landing"
               className="text-darkblue text-lg hover:text-aquaGlow transition font-bold"
             >
               Home
