@@ -48,7 +48,8 @@ const AppWrapper = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
 
-      <Route path="/auth/google/callback" element={<GoogleCallback />} />
+      <Route path="/google/callback" element={<GoogleCallback />} />
+
 
       <Route
         path="/landing"

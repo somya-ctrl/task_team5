@@ -58,7 +58,7 @@ const Login = () => {
 
   
   const handleGoogleLogin = () => {
-    window.location.href = "https://mindease-backend-cyvy.onrender.com/auth/google/callback";
+    window.location.href = "https://mindease-backend-cyvy.onrender.com/auth/google";
   };
 
   return (

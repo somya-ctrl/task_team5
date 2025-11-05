@@ -26,7 +26,7 @@ const handleScrollToFeatures = () => {
       
 
       <main className="hero-bg mt-22">
-        <section className="max-w-6xl px-6 mx-auto md:px-12 py-16">
+        <section className="max-w-6xl px-6 mx-auto md:px-12 py-13">
           <div className="max-w-5xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-center text-darkblue">
               Your journey to inner peace starts here
@@ -41,7 +41,7 @@ const handleScrollToFeatures = () => {
               community to help you navigate life’s challenges with calm and clarity.
             </p>
 
-            <div className="mt-15 pb-8 flex flex-wrap items-center justify-center gap-6">
+            <div className="mt-15 pb-6 flex flex-wrap items-center justify-center gap-6">
               
 
               <button
@@ -65,12 +65,12 @@ const handleScrollToFeatures = () => {
         </section>
 
         
-        <section ref={featuresRef} className="max-w-6xl mx-auto px-6 md:px-12 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 ">
+        <section ref={featuresRef} className="max-w-6xl mx-auto px-6 md:px-12 py-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 ">
             
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
               
-              <div className="w-16 h-16 mx-auto mb-4">
+              <div className="w-16 h-20 mx-auto mb-4">
 
                 <img src={Guided}  
               alt="Guided Meditations"
@@ -89,7 +89,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
             onClick={() => navigate("/miniques")}   
             className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue cursor-pointer"
           >
-            <div className="w-16 h-16 mx-auto mb-4"></div>
+            <div className="w-16 h-20 mx-auto mb-4"></div>
             <h4 className="text-xl font-bold text-darkblue mb-2">
               Mental Wellness Check
             </h4>
@@ -99,7 +99,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
           </div>
 
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
-              <div className="w-16 h-16 mx-auto mb-4">
+              <div className="w-16 h-20 mx-auto mb-4">
                 
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
@@ -112,7 +112,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
 
             
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
-              <div className="w-16 h-16 mx-auto mb-4">
+              <div className="w-16 h-20 mx-auto mb-4">
                
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
@@ -125,7 +125,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
 
           
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
-              <div className="w-16 h-16 mx-auto mb-4">
+              <div className="w-16 h-20 mx-auto mb-4">
                
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
@@ -138,7 +138,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
 
         
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
-              <div className="w-16 h-16 mx-auto mb-4">
+              <div className="w-16 h-20 mx-auto mb-4">
               
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
@@ -200,7 +200,7 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
       
     </div>
     
-    <Footer/>
+    
  </>
   );
 }

@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function GoogleCallback() {
   const [params] = useSearchParams();
@@ -11,14 +11,16 @@ export default function GoogleCallback() {
     const email = params.get("email");
     const photo = params.get("photo");
 
+    
     if (token) {
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify({ name, email, photo }));
-
-      navigate("/dashboard", { replace: true });
+      localStorage.setItem("name", name);
+      localStorage.setItem("email", email);
+      localStorage.setItem("photo", photo);
+      navigate("/landing");
     }
   }, []);
 
-  return <p className="text-white text-center mt-10">Signing you in...</p>;
+  return <div>Loading...</div>;
 }
 
