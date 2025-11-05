@@ -4,6 +4,8 @@ import Mountain from '../assets/mountain.jpg'
 import Shape from '../assets/shape.jpg'
 import { useRef } from "react";
 import Guided from "../assets/Guided.png"
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Dashboard() {
   
@@ -16,6 +18,10 @@ const handleScrollToFeatures = () => {
 
 
   return (
+    
+    <>
+   
+   
     <div className="min-h-screen bg-backg text-darkblue">
       
 
@@ -194,7 +200,8 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
       
     </div>
     
-
+    <Footer/>
+ </>
   );
 }
 

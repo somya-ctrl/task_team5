@@ -6,19 +6,15 @@ const Profile = () => {
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
 
-  const fullName = storedUser.fullName || storedUser.name || "";
-  const nameParts = fullName.trim().split(" ");
-  const first = nameParts[0] || "";
-  const last = nameParts.slice(1).join(" ") || "";
-
+  const userProfession = localStorage.getItem("profession") || "Not Set";
+  
   const [user, setUser] = useState({
-    firstName: first,
-    lastName: last,
+    fullName: storedUser.fullName || storedUser.name || "",
     gender: storedUser.gender || "",
     age: storedUser.age || "",
     phone: storedUser.phone || "",
     email: storedUser.email || "",
-    fullName: fullName,
+    profession: userProfession,
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -28,62 +24,48 @@ const Profile = () => {
   };
 
   const handleSave = () => {
-    const updatedUser = {
-      ...user,
-      fullName: `${user.firstName} ${user.lastName}`.trim(),
-    };
+    const updatedUser = { ...user };
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
+    localStorage.setItem("profession", updatedUser.profession);
     setIsEditing(false);
   };
-const handleLogout = () => {
-  localStorage.removeItem("user");
-  localStorage.removeItem("token");
 
-
-  window.history.pushState(null, "", window.location.href);
-  window.addEventListener("popstate", function () {
-    window.history.pushState(null, "", window.location.href);
-  });
-
-  navigate("/login", { replace: true });
-};
-
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("profession");
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">
-
-
       <div className="absolute left-0 top-0 w-1/2 h-full bg-lightgreen/40"></div>
       <div className="absolute right-0 top-0 w-1/2 h-full bg-pinkGlow/40"></div>
 
-      
       <div className="relative z-10 w-full max-w-4xl bg-backg p-4 sm:p-10 rounded-lg shadow-xl">
-
         <h1 className="text-3xl font-bold text-darkblue mb-6 text-center sm:text-left">
           My Profile
         </h1>
 
-    
         <div className="bg-white rounded-lg p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-4">
+            {storedUser.photo ? (
+              <img
+                src={storedUser.photo}
+                alt="profile"
+                className="w-20 h-20 rounded-full object-cover"
+              />
+            ) : (
+              <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
+            )}
 
-        <div className="flex items-center gap-4">
-
-  {storedUser.photo ? (
-    <img
-      src={storedUser.photo}
-      alt="profile"
-      className="w-20 h-20 rounded-full object-cover"
-    />
-  ) : (
-    <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
-  )}
-
-  <div className="text-center sm:text-left">
-    <h2 className="text-xl font-semibold">{user.fullName}</h2>
-    <p className="text-gray-600 break-all">{user.email}</p>
-  </div>
-</div>
+            <div className="text-center sm:text-left">
+              <h2 className="text-xl font-semibold">{user.fullName}</h2>
+              <p className="text-gray-600 break-all">{user.email}</p>
+              
+            </div>
+          </div>
 
           <div className="flex gap-3">
             <button
@@ -103,7 +85,6 @@ const handleLogout = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6 mt-8">
-
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <h2 className="text-2xl font-bold text-darkblue">Personal Information</h2>
 
@@ -118,32 +99,30 @@ const handleLogout = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
             <div>
-              <p className="text-gray-600 font-semibold">First Name</p>
-              <p className="font-medium">{user.firstName}</p>
+              <p className="text-gray-600 font-semibold">Full Name</p>
+              <p className="font-medium">{user.fullName}</p>
             </div>
 
             <div>
-              <p className="text-gray-600 font-semibold">Last Name</p>
-              <p className="font-medium">{user.lastName}</p>
+              <p className="text-gray-600 font-semibold">Profession</p>
+              <p className="font-medium">{user.profession}</p>
             </div>
 
             <div>
               <p className="text-gray-600 font-semibold">Gender</p>
               {isEditing ? (
-               <select
-  name="gender"
-  value={user.gender}
-  onChange={handleChange}
-  className="border p-2 rounded w-full"
->
-  <option value="" disabled >Select Gender</option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-  <option value="Other">Other</option>
-</select>
-
+                <select
+                  name="gender"
+                  value={user.gender}
+                  onChange={handleChange}
+                  className="border p-2 rounded w-full"
+                >
+                  <option value="" disabled>Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
               ) : (
                 <p className="font-medium">{user.gender}</p>
               )}

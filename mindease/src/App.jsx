@@ -6,7 +6,7 @@ import Footer from "./components/Footer";
 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Landing from "./pages/Landing";
 import Journal from "./pages/Journal";
 import Meditations from "./pages/Meditations";
 import MoodDetection from "./pages/MoodDetection";
@@ -16,6 +16,7 @@ import Aboutus from "./pages/About";
 import Chatbot from "./pages/Chatbot";
 import Result from "./pages/Result";
 import GoogleCallback from "./pages/GoogleCallback"; 
+import Profession from "./pages/Profession";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -50,13 +51,26 @@ const AppWrapper = () => {
       <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
       <Route
-        path="/dashboard"
+        path="/landing"
         element={
           <PrivateRoute>
             <>
               <Navbar />
-              <Dashboard />
+              <Landing />
               <Footer />
+            </>
+          </PrivateRoute>
+        }
+      />
+
+ <Route
+        path="/profession"
+        element={
+          <PrivateRoute>
+            <>
+               
+              <Profession />
+              
             </>
           </PrivateRoute>
         }
@@ -141,9 +155,9 @@ const AppWrapper = () => {
         element={
           <PrivateRoute>
             <>
-              <Navbar />
+              
               <Chatbot />
-              <Footer />
+              
             </>
           </PrivateRoute>
         }
