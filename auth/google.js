@@ -71,11 +71,11 @@ const handleGoogleCallback = async (req, res) => {
       console.log('Linked googleId to existing user:', user.email);
     }
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    // const frontendRedirect = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/success?token=${token}`;
     const photo = data.picture || '';
 
 
-  const frontendRedirect = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/google/callback?`+`token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&photo=${encodeURIComponent(photo)}`;
+    const frontendRedirect = `https://mindease-team5-task.netlify.app/google/callback?` +`token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&photo=${encodeURIComponent(photo)}`;
+
 
     return res.redirect(frontendRedirect);
   } catch (error) {
