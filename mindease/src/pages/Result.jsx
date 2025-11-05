@@ -1,10 +1,37 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Result() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const [result] = useState(location.state);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  axios.get("https://mindease-backend-cyvy.onrender.com/result", {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token")
+    }
+  })
+    .then((res) => {
+      console.log("API RES:", res.data);
+      setResult(res.data.result);  
+    })
+    .catch((err) => {
+      console.log(err);
+      setResult(null);
+    })
+    .finally(() => setLoading(false));
+}, []);
+
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-backg">
+        <p className="text-lg text-darkblue">Loading Result...</p>
+      </div>
+    );
+  }
 
   if (!result) {
     return (
