@@ -12,8 +12,8 @@ if not GROQ_API_KEY:
     raise EnvironmentError("❌ GROQ_API_KEY missing in .env file. Please add it before starting the app.")
 
 # --------- Internal imports ----------
-from models import ChatRequest
-from chat_engine import get_response
+from models import ChatRequest, StartRequest  # ADDED StartRequest
+from chat_engine import get_response, start_session  # ADDED start_session
 from logger import log_chat
 from crisis import contains_crisis_keywords, SAFETY_MESSAGE
 from doc_engine import query_documents
@@ -52,6 +52,23 @@ def home():
     }
 
 # --------- Chat endpoints ----------
+@app.post("/start")  # ADDED
+def start_chat(request: StartRequest):
+    try:
+        session_id = (request.session_id or "").strip()
+        if not session_id:
+            raise HTTPException(status_code=400, detail="session_id cannot be empty.")
+        greeting = start_session(session_id)
+        try:
+            log_chat(session_id, "[AUTOGREET]", greeting, is_crisis=False)
+        except Exception:
+            pass
+        return {"response": greeting, "crisis_detected": False, "autostart": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Start error: {str(e)}")
+
 @app.post("/chat")
 def chat_with_memory(request: ChatRequest):
     try:

@@ -25,17 +25,20 @@ SYSTEM_PROMPT = (
     "Encourage seeking professional help when appropriate."
 )
 
+# ADDED
+GREETING = (
+    "Hey! I’m MindBot 💙 How’s your day going? "
+    "I’m here to listen—share anything that’s on your mind."
+)
+
 def _truncate(history: List[Dict[str, str]], max_turns: int = 12) -> List[Dict[str, str]]:
-    # keep last ~12 user+assistant exchanges (+system)
     if not history:
         return history
-    # leave the first message if it's system, then last 24 messages
     head = history[:1] if history and history[0].get("role") == "system" else []
     tail = history[-(max_turns * 2):]
     return head + tail
 
 def _chat(messages: List[Dict[str, str]], model: str = DEFAULT_MODEL) -> str:
-    # Using Groq's OpenAI-compatible chat endpoint via SDK
     resp = client.chat.completions.create(
         model=model,
         messages=messages,
@@ -51,3 +54,11 @@ def get_response(session_id: str, user_query: str) -> str:
     answer = _chat(history, model=DEFAULT_MODEL)
     _session_store[session_id].append({"role": "assistant", "content": answer})
     return answer
+
+# ADDED
+def start_session(session_id: str) -> str:
+    if session_id not in _session_store:
+        _session_store[session_id] = [{"role": "system", "content": SYSTEM_PROMPT}]
+        _session_store[session_id].append({"role": "assistant", "content": GREETING})
+        return GREETING
+    return "Hi again! Ready to pick up where we left off?"
