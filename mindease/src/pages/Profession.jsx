@@ -19,10 +19,12 @@ const Profession = () => {
     if (prof) setShowGuide(false);
   }, []);
 
-  const handleSelect = (type) => {
-    localStorage.setItem("profession", type)
-    setShowGuide(false)
-  }
+ const handleSelect = (type) => {
+  localStorage.setItem("profession", type)
+  setShowGuide(false)
+  navigate("/dashboard")
+}
+
 
 
  const featuresRef = useRef(null);
