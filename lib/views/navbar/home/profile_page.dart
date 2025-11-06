@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mind_ease_app/controller/auth_controller.dart';
+import 'package:mind_ease_app/controller/profile_controller.dart';
+import 'package:mind_ease_app/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -55,8 +56,26 @@ class _ProfilePageState extends State<ProfilePage> {
     ageController.text = age;
   }
 
-  
   Future<void> _saveProfile() async {
+  final auth = AuthController();
+  final userData = await auth.getUserDetails();
+
+  final user = UserModel(
+    name: userData['name'] ?? '',
+    email: userData['email'] ?? '',
+    token: userData['token'],
+  );
+
+  final profileController = ProfileController();
+
+  bool success = await profileController.updateProfile(
+    user: user,
+    phone: phoneController.text,
+    gender: genderController.text,
+    age: ageController.text,
+  );
+
+  if (success) {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('phone', phoneController.text);
     await prefs.setString('gender', genderController.text);
@@ -72,7 +91,13 @@ class _ProfilePageState extends State<ProfilePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Profile updated successfully!')),
     );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Failed to update profile')),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,25 +112,19 @@ class _ProfilePageState extends State<ProfilePage> {
             const Text(
               "My Profile",
               style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+                fontSize: 22,fontWeight: FontWeight.bold,color: Colors.black,
               ),
             ),
             const SizedBox(height: 20),
 
-            
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFEFF8F9),
-                borderRadius: BorderRadius.circular(10),
-              ),
+                color: const Color(0xFFEFF8F9),borderRadius: BorderRadius.circular(10)),
               child: Row(
                 children: [
                   const CircleAvatar(
-                    radius: 35,
-                    backgroundColor: Colors.teal,
+                    radius: 35,backgroundColor: Colors.teal,
                     child: Icon(Icons.person, size: 40, color: Colors.white),
                   ),
                   const SizedBox(width: 16),

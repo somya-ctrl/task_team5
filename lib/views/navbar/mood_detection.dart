@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_ease_app/views/navbar/home/chatbot.dart';
 
 class MoodDetectionPage extends StatefulWidget {
   const MoodDetectionPage({super.key});
@@ -13,7 +14,7 @@ class _MoodDetectionPageState extends State<MoodDetectionPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 253, 247, 231),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -180,7 +181,13 @@ class _MoodDetectionPageState extends State<MoodDetectionPage> {
                         ),
                         const SizedBox(width: 8),
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ChatbotPage()));
+                          },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color.fromARGB(255, 68, 173, 162)),
                             backgroundColor: Colors.white,
@@ -188,7 +195,7 @@ class _MoodDetectionPageState extends State<MoodDetectionPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 12),
                           ),
                           child: const Text(
-                            "Talk to Community",
+                            "Talk to Chatbot",
                             style: TextStyle(color: Color.fromARGB(255, 68, 173, 162)),
                           ),
                         ),

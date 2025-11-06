@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mind_ease_app/controller/quiz_controller.dart';
+import 'package:provider/provider.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
@@ -8,178 +10,198 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  int currentQuestionIndex = 0;
-
-  final List<Map<String, dynamic>> questions = [
-    {"question": "What is your age?"},
-    {"question": "What is your Gender?"},
-    {"question": "What is your Country?"},
-    {"question": "How often do you feel stressed?"},
-    {"question": "How well do you sleep at night?"},
-  ];
-
-  void nextQuestion() {
-    if (currentQuestionIndex < questions.length - 1) {
-      setState(() {
-        currentQuestionIndex++;
-      });
-    }
-  }
-
-  void previousQuestion() {
-    if (currentQuestionIndex > 0) {
-      setState(() {
-        currentQuestionIndex--;
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    // Load quiz as soon as page starts
+    Future.microtask(() =>
+        Provider.of<QuizController>(context, listen: false).loadQuiz());
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = questions[currentQuestionIndex];
+    return Consumer<QuizController>(
+      builder: (context, controller, child) {
+        if (controller.isLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 253, 247, 231),
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 237, 228, 198),
-        title: const Text(
-          "MindEase",
-          style: TextStyle(
-            color: Color.fromARGB(255, 31, 58, 95),
-            fontWeight: FontWeight.bold,
+        if (controller.questions.isEmpty) {
+          return const Scaffold(
+            body: Center(child: Text("No quiz available")),
+          );
+        }
+
+        final question = controller.currentQuestion;
+        final selectedAnswer =
+            controller.userAnswers[question.id.toString()] ?? '';
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "Quiz (${controller.currentIndex + 1}/${controller.questions.length})",
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.teal,
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 10),
-            const Text(
-              "Mental Wellness Assessment",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: Color.fromARGB(255, 31, 58, 95),
-              ),
-            ),
-            const SizedBox(height: 6),
-            const Text(
-              "Take your time and answer honestly. There are no right or wrong answers.",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                color: Color.fromARGB(255, 31, 58, 95),
-              ),
-            ),
-            const SizedBox(height: 25),
-
-            // Question Card
-            Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                child: Container(
-                  key: ValueKey<int>(currentQuestionIndex),
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 237, 236, 221),
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: const Color.fromARGB(255, 31, 58, 95),
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Question ${currentQuestionIndex + 1} of ${questions.length}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 31, 58, 95),
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      Text(
-                        currentQuestion["question"],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromARGB(255, 31, 58, 95),
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-
-                      // Placeholder for your custom input (like TextField, slider, buttons)
-                      Container(
-                        height: 35,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 68, 173, 162),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            // Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ElevatedButton(
-                  onPressed: previousQuestion,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 68, 173, 162),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    "Previous",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 31, 58, 95),
-                      fontWeight: FontWeight.bold,
-                    ),
+                Text(
+                  question.questionText,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: nextQuestion,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 68, 173, 162),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 20),
+
+                // ✅ Handle both MCQs and text inputs
+                if (question.options.isNotEmpty)
+                  ...question.options.map(
+                    (option) => RadioListTile(
+                      title: Text(option),
+                      value: option,
+                      groupValue: selectedAnswer,
+                      onChanged: (value) {
+                        controller.answerQuestion(
+                            question.id.toString(), value!);
+                      },
                     ),
-                  ),
-                  child: Text(
-                    currentQuestionIndex == questions.length - 1
-                        ? "Finish"
-                        : "Next",
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 31, 58, 95),
-                      fontWeight: FontWeight.bold,
+                  )
+                else
+                  TextFormField(
+                    initialValue:
+                        controller.userAnswers[question.id.toString()] ?? '',
+                    decoration: InputDecoration(
+                      labelText: "Enter your answer",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
+                    onChanged: (value) {
+                      controller.answerQuestion(
+                          question.id.toString(), value);
+                    },
                   ),
+
+                const Spacer(),
+
+                // ✅ Navigation Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: controller.currentIndex > 0
+                          ? controller.previousQuestion
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[400],
+                      ),
+                      child: const Text("Previous"),
+                    ),
+
+                    // ✅ Submit Button
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (controller.currentIndex <
+                            controller.questions.length - 1) {
+                          controller.nextQuestion();
+                        } else {
+                          // ✅ Submit the quiz
+                          await controller.submitAnswers();
+                          await Future.delayed(const Duration(seconds: 2));
+
+
+                          // ✅ Fetch the result
+                          final resultData =
+                              await controller.fetchResult();
+
+                          if (!mounted) return;
+
+                          if (resultData.containsKey('result')) {
+                            // 🎨 Show formatted dialog instead of short snackbar
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                final resultText =
+                                    resultData['result'] ?? 'No result';
+                                final confidence =
+                                    resultData['confidence'] ?? 'N/A';
+
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(16)),
+                                  title: const Text(
+                                    "🧠 Mental Health Assessment",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Result: $resultText",
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "Confidence: $confidence",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.blueGrey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context),
+                                      child: const Text("OK"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Result not available yet, please try again later.'),
+                                backgroundColor: Colors.redAccent,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                      ),
+                      child: Text(
+                        controller.currentIndex <
+                                controller.questions.length - 1
+                            ? "Next"
+                            : "Submit",
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 15),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
