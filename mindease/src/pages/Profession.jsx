@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Landing from './Landing'
 import Doctor from "../assets/image.png";
 import Cloud from "../assets/Cloud.png";
@@ -7,17 +7,23 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import Mountain from '../assets/mountain.jpg'
 import Shape from '../assets/shape.jpg'
-import { useRef } from "react";
+
 import Guided from "../assets/Guided.png"
 
 const Profession = () => {
   const [showGuide, setShowGuide] = useState(true);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const prof = localStorage.getItem("profession");
+    if (prof) setShowGuide(false);
+  }, []);
+
   const handleSelect = (type) => {
     localStorage.setItem("profession", type)
     setShowGuide(false)
   }
+
 
  const featuresRef = useRef(null);
 

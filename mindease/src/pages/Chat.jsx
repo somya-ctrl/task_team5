@@ -52,10 +52,10 @@ export default function Chat() {
         {messages.map((m, i) => (
           <div
             key={i}
-            className={`max-w-[80%] px-4 py-2 rounded-2xl text-sm shadow-sm
+            className={`max-w-[40%] px-5 py-2 rounded-2xl text-sm shadow-sm
               ${m.role === "user" 
-                ? "ml-auto bg-pinkGlow text-white" 
-                : "mr-auto bg-aquaGlow text-darkblue border border-aquaGlow"
+          ? "ml-auto bg-lightgreen text-white"
+                : "mr-auto bg-lightgrey text-darkblue border border-lightgreen"
               }`
             }
           >
