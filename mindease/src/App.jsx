@@ -18,6 +18,7 @@ import Result from "./pages/Result";
 import GoogleCallback from "./pages/GoogleCallback"; 
 import Profession from "./pages/Profession";
 import Chat from "./pages/Chat";
+import Dashboard from "./pages/Dashboard";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -104,6 +105,21 @@ const AppWrapper = () => {
           </PrivateRoute>
         }
       />
+
+
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <>
+              <Navbar />
+              <Dashboard />
+              <Footer />
+            </>
+          </PrivateRoute>
+        }
+      />
+
 
       <Route
         path="/meditations"
