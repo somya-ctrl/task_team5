@@ -14,16 +14,19 @@ const Profession = () => {
   const [showGuide, setShowGuide] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const prof = localStorage.getItem("profession");
-    if (prof) setShowGuide(false);
-  }, []);
+useEffect(() => {
+  const prof = localStorage.getItem("profession");
+  if (prof) {
+    navigate("/dashboard"); 
+  }
+}, []);
 
- const handleSelect = (type) => {
-  localStorage.setItem("profession", type)
-  setShowGuide(false)
-  navigate("/dashboard")
-}
+
+const handleSelect = (type) => {
+  localStorage.setItem("profession", type);
+  navigate("/dashboard");
+};
+;
 
 
 
@@ -85,8 +88,8 @@ const handleScrollToFeatures = () => {
         </div>
       )}
 
-      
-      <div className={`${showGuide ? "blur-sm scale-100" : "scale-100"}`}>
+    <div className={`${showGuide ? "blur-sm pointer-events-none" : ""}`}>
+
 
 <Navbar/>
         

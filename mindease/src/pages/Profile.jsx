@@ -8,16 +8,26 @@ const Profile = () => {
 
   const userProfession = localStorage.getItem("profession") || "Not Set";
   
-  const [user, setUser] = useState({
-   fullName: storedUser.fullName || storedUser.name || "",
-    gender: storedUser.gender || "",
-    age: storedUser.age || "",
-    phone: storedUser.phone || "",
-    email: storedUser.email || "",
-    profession: userProfession,
-  });
+ const [user, setUser] = useState({
+  fullName: storedUser.name || storedUser.fullName || "",
+  gender: storedUser.gender || "",
+  age: storedUser.age || "",
+  phone: storedUser.phone || "",
+  email: storedUser.email || "",
+  profession: userProfession,
+});
+
 
   const [isEditing, setIsEditing] = useState(false);
+
+
+  const profilePhoto =
+  storedUser.picture ||
+  storedUser.photoURL ||
+  storedUser.image ||
+  storedUser.photo || 
+  "";
+
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -50,15 +60,16 @@ const Profile = () => {
 
         <div className="bg-white rounded-lg p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4">
-            {storedUser.photo ? (
-              <img
-                src={storedUser.photo}
-                alt="profile"
-                className="w-20 h-20 rounded-full object-cover"
-              />
-            ) : (
-              <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
-            )}
+          {profilePhoto ? (
+  <img
+    src={profilePhoto}
+    alt="profile"
+    className="w-20 h-20 rounded-full object-cover"
+  />
+) : (
+  <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
+)}
+
 
             <div className="text-center sm:text-left">
               <h2 className="text-xl font-semibold">{user.fullName}</h2>

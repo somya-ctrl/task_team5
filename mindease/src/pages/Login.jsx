@@ -15,7 +15,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // rotating images logic
+  
   const images = [Man, Woman, Logp];
   const [currentImg, setCurrentImg] = useState(0);
 
@@ -74,7 +74,7 @@ const Login = () => {
   return (
     <div className="min-h-screen w-full flex bg-backg overflow-hidden">
 
-      {/* left auto slideshow */}
+      
       <div className="hidden md:block w-1/2 h-screen p-5">
         <img
           src={images[currentImg]}
@@ -83,7 +83,7 @@ const Login = () => {
         />
       </div>
 
-      {/* right side login box */}
+      
       <div className="flex items-center justify-between w-full md:w-1/2 p-6 relative">
         <div className="z-10 text-darkblue p-8 w-full max-w-xl">
 
