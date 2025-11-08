@@ -6,7 +6,7 @@ const QuizSchema = new mongoose.Schema({
       required: true,
     },
     answers: {
-      type: [String], // or [Number] if your ML inputs are all numeric
+      type: [String], 
       required: true,
     },
     prediction: String,

@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const RefreshToken = require('../models/refreshToken');
+const crypto = require('crypto');
 const axios = require("axios");
 let lastResult = null;
 
@@ -33,13 +35,29 @@ async function login (req,res){
         if(!isMatch){
             return res.status(401).json({error:'Invalid credentials'});
         }
-         const token = jwt.sign(
-          { id: user._id, email: user.email },
-           process.env.JWT_SECRET,
-          { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
+
+        const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || "15m" } 
     );
-        res.status(200).json({message:'Login successful', token,
-        user: { id: user._id, name: user.name, email: user.email }});
+
+    
+    const refreshToken = crypto.randomBytes(64).toString("hex");
+
+  
+    await RefreshToken.create({
+      user: user._id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      accessToken,
+      refreshToken,
+      user: { id: user._id, name: user.name, email: user.email },
+    });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -258,6 +276,42 @@ const editUser = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+async function refreshaccesstoken(req, res) {
+  try {
+    const { refreshToken } = req.body;
 
+    if (!refreshToken)
+      return res.status(400).json({ error: "Refresh token is required" });
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser }; 
+    const tokenDoc = await RefreshToken.findOne({ token: refreshToken });
+    if (!tokenDoc)
+      return res.status(403).json({ error: "Invalid refresh token" });
+
+    if (tokenDoc.expiresAt < new Date()) {
+      await tokenDoc.deleteOne();
+      return res.status(403).json({ error: "Refresh token expired" });
+    }
+
+    
+    const newAccessToken = jwt.sign(
+      { id: tokenDoc.user },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || "15m" }
+    );
+
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+async function logout(req, res) {
+  try {
+    const { refreshToken } = req.body;
+    await RefreshToken.deleteOne({ token: refreshToken });
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout };
