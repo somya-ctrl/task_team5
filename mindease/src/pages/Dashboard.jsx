@@ -78,17 +78,18 @@ const loadMoodHistory = (uid) =>
 const saveMoodHistory = (uid, obj) => localStorage.setItem(MOOD_KEY(uid), JSON.stringify(obj));
 
 const ACTIVITY_KEY = (uid) => `user-${uid}-activity`;
+
 const loadActivity = (uid) => {
   const arr = JSON.parse(localStorage.getItem(ACTIVITY_KEY(uid)) || "[]");
   if (arr.length === 0) return [];
 
-  // Remove consecutive duplicate texts
   const filtered = [arr[0]];
   for (let i = 1; i < arr.length; i++) {
     if (arr[i].text !== arr[i - 1].text) filtered.push(arr[i]);
   }
   return filtered;
 };
+
 
 const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
 
@@ -277,22 +278,23 @@ export default function Dashboard() {
   };
 
   const { goals, toggleGoal } = useDashboardData(tasks);
-  const [activity, setActivity] = useState(() => loadActivity(uid));
 
-  useEffect(() => {
-    const key = ACTIVITY_KEY(uid);
-    const onStorage = (e) => {
-      if (e.key === key) setActivity(loadActivity(uid));
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [uid]);
+ const [activity, setActivity] = useState(() => loadActivity(uid));
 
-  useEffect(() => {
-    const onFocus = () => setActivity(loadActivity(uid));
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
-  }, [uid]);
+useEffect(() => {
+  const key = ACTIVITY_KEY(uid);
+  const onStorage = (e) => {
+    if (e.key === key) setActivity(loadActivity(uid));
+  };
+  window.addEventListener("storage", onStorage);
+  return () => window.removeEventListener("storage", onStorage);
+}, [uid]);
+
+useEffect(() => {
+  const onFocus = () => setActivity(loadActivity(uid));
+  window.addEventListener("focus", onFocus);
+  return () => window.removeEventListener("focus", onFocus);
+}, [uid]);
 
   const doneCount = ["meditation", "journal", "mood"].filter((k) => tasks[k]).length;
   const taskPercent = Math.round((doneCount / 3) * 100);
@@ -403,23 +405,26 @@ export default function Dashboard() {
             </ul>
           </Card>
 
-          <Card title="Recent Activity">
-            <ul className="space-y-3">
-              {activity.length === 0 && <li className="text-slate-500">No recent activity</li>}
-              {activity.slice(0, 3).map((a, idx) => (
-                <li
-                  key={a.ts ?? idx}
-                  className="flex items-center justify-between rounded-xl bg-[#FBF6EA] ring-1 ring-slate-200 px-4 py-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">📝</span>
-                    <p className="font-medium">{a.text}</p>
-                  </div>
-                  <p className="text-xs text-slate-500">{a.meta}</p>
-                </li>
-              ))}
-            </ul>
-          </Card>
+        <Card title="Recent Activity">
+  <ul className="space-y-3">
+    {activity.length === 0 && (
+      <li className="text-slate-500">No recent activity</li>
+    )}
+    {activity.slice(0, 3).map((a, idx) => (
+      <li
+        key={a.ts ?? idx}
+        className="flex items-center justify-between rounded-xl bg-[#FBF6EA] ring-1 ring-slate-200 px-4 py-3"
+      >
+        <div className="flex items-center gap-3">
+          <span className="text-lg">📝</span>
+          <p className="font-medium">{a.text}</p>
+        </div>
+        <p className="text-xs text-slate-500">{a.meta}</p>
+      </li>
+    ))}
+  </ul>
+</Card>
+
         </section>
 
         <section className="px-4 sm:px-6 lg:px-8">

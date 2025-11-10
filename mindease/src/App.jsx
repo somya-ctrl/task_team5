@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -14,24 +20,23 @@ import Profile from "./pages/Profile";
 import MiniQuizzes from "./pages/MiniQuizzes";
 import Aboutus from "./pages/About";
 import Result from "./pages/Result";
-import GoogleCallback from "./pages/GoogleCallback"; 
+import GoogleCallback from "./pages/GoogleCallback";
 import Profession from "./pages/Profession";
 import Chat from "./pages/Chat";
 import Dashboard from "./pages/Dashboard";
 
 const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/login" replace />;
+  const accessToken = localStorage.getItem("accessToken");
+  return accessToken ? children : <Navigate to="/login" replace />;
 };
-
 
 const AppWrapper = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleBackButton = () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
         window.history.pushState(null, "", window.location.href);
         navigate("/login", { replace: true });
       }
@@ -43,57 +48,51 @@ const AppWrapper = () => {
 
   return (
     <Routes>
-
       <Route path="/" element={<Navigate to="/landing" />} />
-
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-
       <Route path="/google/callback" element={<GoogleCallback />} />
 
- <Route path="/landing" element={<>
- 
-  
-              < Landing/>
-              <Footer />
- 
- </>} />
+      <Route
+        path="/landing"
+        element={
+          <>
+            <Landing />
+            <Footer />
+          </>
+        }
+      />
+
       <Route
         path="/dashboard"
         element={
           <PrivateRoute>
             <>
               <Navbar />
-              < Dashboard/>
+              <Dashboard />
               <Footer />
             </>
           </PrivateRoute>
         }
       />
 
-
- <Route
+      <Route
         path="/profession"
         element={
           <PrivateRoute>
             <>
-               
               <Profession />
-              
             </>
           </PrivateRoute>
         }
       />
 
-
- <Route
+      <Route
         path="/chat"
         element={
           <PrivateRoute>
             <>
-               
-              <Chat/>
-              
+              <Chat />
             </>
           </PrivateRoute>
         }
@@ -111,9 +110,6 @@ const AppWrapper = () => {
           </PrivateRoute>
         }
       />
-
-
-
 
       <Route
         path="/meditations"
@@ -158,7 +154,6 @@ const AppWrapper = () => {
           <>
             <Navbar />
             <Aboutus />
-        
           </>
         }
       />
@@ -175,11 +170,6 @@ const AppWrapper = () => {
         }
       />
 
-    
-      
-    
-
-      
       <Route
         path="/result"
         element={
@@ -192,7 +182,6 @@ const AppWrapper = () => {
           </PrivateRoute>
         }
       />
-
     </Routes>
   );
 };

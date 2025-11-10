@@ -8,6 +8,17 @@ const MiniQuizzes = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
 
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const uid = user?.id;
+
+  const addActivity = (uid, text, meta = "") => {
+    const key = `user-${uid}-activity`;
+    const arr = JSON.parse(localStorage.getItem(key) || "[]");
+    arr.unshift({ text, meta, ts: Date.now() });
+    if (arr.length > 20) arr.length = 20;
+    localStorage.setItem(key, JSON.stringify(arr));
+  };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -19,6 +30,10 @@ const MiniQuizzes = () => {
     };
     fetchQuestions();
   }, []);
+
+  useEffect(() => {
+    if (uid) addActivity(uid, "Opened Mini Quiz");
+  }, [uid]); // Always called unconditionally
 
   const currentQuestion = questions[currentIndex];
 
@@ -41,15 +56,17 @@ const MiniQuizzes = () => {
   };
 
   const handleSubmit = async () => {
-    if (answers.length !== questions.length || answers.includes(undefined) || answers.includes("")) {
+    if (
+      answers.length !== questions.length ||
+      answers.includes(undefined) ||
+      answers.includes("")
+    ) {
       alert("Please answer all questions before submitting.");
       return;
     }
 
     const fixedAnswers = [...answers];
     fixedAnswers[0] = Number(fixedAnswers[0]);
-
-    // Use "accessToken" key here for consistency
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -58,22 +75,16 @@ const MiniQuizzes = () => {
     }
 
     try {
-      console.log("Sending to backend:", fixedAnswers);
-
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/submit`,
         { answers: fixedAnswers },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      console.log("Submit Success:", response.data);
       navigate("/result", { state: response.data.result });
     } catch (err) {
-      console.log("Submit Error:", err.response?.data || err.message);
       alert(err.response?.data?.error || "Submission failed. Try again.");
     }
   };

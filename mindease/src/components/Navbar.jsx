@@ -82,11 +82,11 @@ const Navbar = () => {
               Meditations
             </Link>
             <Link
-              to="/mooddetection"
+              to="/chat"
               className="text-darkblue hover:text-aquaGlow"
               onClick={() => setMenuOpen(false)}
             >
-              Mood Detection
+              AI Therapist
             </Link>
             <Link
               to="/profile"

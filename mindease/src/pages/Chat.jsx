@@ -1,8 +1,21 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
 export default function Chat() {
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+const uid = user?.id;
+
+const addActivity = (uid, text, meta = "") => {
+  const key = `user-${uid}-activity`;
+  const arr = JSON.parse(localStorage.getItem(key) || "[]");
+  arr.unshift({ text, meta, ts: Date.now() });
+  if (arr.length > 20) arr.length = 20; // Limit history length
+  localStorage.setItem(key, JSON.stringify(arr));
+};
+
+
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -60,6 +73,11 @@ export default function Chat() {
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+  if (uid) addActivity(uid, "Opened AI Therapist");
+}, [uid]);
+
 
   return (
     <>
