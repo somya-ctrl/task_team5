@@ -11,6 +11,7 @@ export default function Chat() {
   const SESSION_ID = "mindbot-user-1";
 
   const BASE_CHAT = import.meta.env.VITE_CHATBOT_API;
+  const token = localStorage.getItem("accessToken");  // use accessToken here
 
   async function sendMessage() {
     if (!input.trim()) return;
@@ -22,19 +23,29 @@ export default function Chat() {
 
     try {
       let res;
+      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+
       if (!sessionStarted) {
-        // First message start conversation
-        res = await axios.post(`${BASE_CHAT}/start`, {
-          session_id: SESSION_ID,
-          query: userText,
-        });
+        // First message starts conversation
+        res = await axios.post(
+          `${BASE_CHAT}/start`,
+          {
+            session_id: SESSION_ID,
+            query: userText,
+          },
+          config
+        );
         setSessionStarted(true);
       } else {
-        // next messages
-        res = await axios.post(`${BASE_CHAT}/chat`, {
-          session_id: SESSION_ID,
-          query: userText,
-        });
+        // Subsequent messages
+        res = await axios.post(
+          `${BASE_CHAT}/chat`,
+          {
+            session_id: SESSION_ID,
+            query: userText,
+          },
+          config
+        );
       }
 
       setMessages((prev) => [
@@ -47,7 +58,6 @@ export default function Chat() {
         { role: "bot", text: "Error connecting to server" },
       ]);
     }
-
     setLoading(false);
   }
 
@@ -70,21 +80,17 @@ export default function Chat() {
           {messages.map((m, i) => (
             <div
               key={i}
-              className={`max-w-[40%] px-5 py-2 rounded-2xl text-sm shadow-sm
-                ${
-                  m.role === "user"
-                    ? "ml-auto bg-lightgreen text-white"
-                    : "mr-auto bg-lightgrey text-darkblue border border-lightgreen"
-                }`
-              }
+              className={`max-w-[40%] px-5 py-2 rounded-2xl text-sm shadow-sm ${
+                m.role === "user"
+                  ? "ml-auto bg-lightgreen text-white"
+                  : "mr-auto bg-lightgrey text-darkblue border border-lightgreen"
+              }`}
             >
               {m.text}
             </div>
           ))}
 
-          {loading && (
-            <div className="text-sm text-darkblue opacity-50">typing...</div>
-          )}
+          {loading && <div className="text-sm text-darkblue opacity-50">typing...</div>}
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 p-3 bg-backg border-t border-lightgreen flex gap-2">

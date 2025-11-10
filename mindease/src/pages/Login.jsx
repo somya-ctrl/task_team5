@@ -15,7 +15,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  
   const images = [Man, Woman, Logp];
   const [currentImg, setCurrentImg] = useState(0);
 
@@ -54,26 +53,31 @@ const Login = () => {
         formData
       );
 
-      const { user, token } = res.data;
+      // Extract tokens and user from response based on your structure
+      const { accessToken, refreshToken, user } = res.data;
+
+      // Clear specific old keys from localStorage
       Object.keys(localStorage).forEach((k) => {
-      if (
-        k.startsWith("user-null") ||
-        k.startsWith("user-undefined") ||
-        k.startsWith("meditation-done") ||
-        k.startsWith("journal-done") ||
-        k.startsWith("mood-check-done") ||
-        k.startsWith("mood-history") ||
-        k === "name" ||
-        k === "photo"
-      ) {
-        localStorage.removeItem(k);
-      }
-    });
+        if (
+          k.startsWith("user-null") ||
+          k.startsWith("user-undefined") ||
+          k.startsWith("meditation-done") ||
+          k.startsWith("journal-done") ||
+          k.startsWith("mood-check-done") ||
+          k.startsWith("mood-history") ||
+          k === "name" ||
+          k === "photo"
+        ) {
+          localStorage.removeItem(k);
+        }
+      });
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+      // Save tokens and user information
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("user", JSON.stringify(user));
 
-    navigate("/profession");
+      navigate("/profession");
     } catch (err) {
       setError("Invalid email or password");
     } finally {
@@ -83,13 +87,10 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
-
   };
 
   return (
     <div className="min-h-screen w-full flex bg-backg overflow-hidden">
-
-      
       <div className="hidden md:block w-1/2 h-screen p-5">
         <img
           src={images[currentImg]}
@@ -98,10 +99,8 @@ const Login = () => {
         />
       </div>
 
-      
       <div className="flex items-center justify-between w-full md:w-1/2 p-6 relative">
         <div className="z-10 text-darkblue p-8 w-full max-w-xl">
-
           <h1 className="text-3xl font-bold mb-2">
             Welcome back!
             <br />
@@ -140,7 +139,7 @@ const Login = () => {
                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-darkblue"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <FaEye size={20}/> : <FaEyeSlash size={20}/> }
+                {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
               </span>
             </div>
 

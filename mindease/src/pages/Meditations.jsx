@@ -81,12 +81,14 @@ export default function Meditations() {
   const prevVideoRef = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const uid = user?.id; // MUST BE present for manual login
+  const uid = user?.id; // Must be present for manual login
   const today = new Date().toISOString().slice(0, 10);
   const dailyKey = `user-${uid}-daily`;
   const navigate = useNavigate();
 
-  // Activity logging function
+  // Prepare for potential auth usage
+  const accessToken = localStorage.getItem("accessToken");
+
   const addActivity = (uid, text, meta = "") => {
     const key = `user-${uid}-activity`;
     const arr = JSON.parse(localStorage.getItem(key) || "[]");
@@ -98,41 +100,36 @@ export default function Meditations() {
   const loadDaily = () => JSON.parse(localStorage.getItem(dailyKey) || "{}");
   const saveDaily = (obj) => localStorage.setItem(dailyKey, JSON.stringify(obj));
 
-  // Log when user opens the Meditation page
   useEffect(() => {
     if (uid) addActivity(uid, "Opened Meditation Page");
   }, [uid]);
 
   const stopAndSave = () => {
-  if (!meditationStart) return;
-  const diffMs = Date.now() - meditationStart;
-  const seconds = Math.floor(diffMs / 1000);
+    if (!meditationStart) return;
+    const diffMs = Date.now() - meditationStart;
+    const seconds = Math.floor(diffMs / 1000);
 
-  if (seconds >= 10) {
-    // Format the time string to show "1 min 30 sec" or just "45 sec"
-    const minutes = Math.floor(seconds / 60);
-    const remSec = seconds % 60;
-    const timeString = minutes > 0 ? `${minutes} min ${remSec} sec` : `${remSec} sec`;
-    addActivity(uid, "Completed Meditation Session", timeString);
+    if (seconds >= 10) {
+      const minutes = Math.floor(seconds / 60);
+      const remSec = seconds % 60;
+      const timeString = minutes > 0 ? `${minutes} min ${remSec} sec` : `${remSec} sec`;
+      addActivity(uid, "Completed Meditation Session", timeString);
 
-    // Save minutes for weekly stats if you use them elsewhere
-    const daily = loadDaily();
-    const todayObj = daily[today] || { meditation: 0, journal: 0, mood: 0 };
-    todayObj.meditation += minutes;
-    daily[today] = todayObj;
-    saveDaily(daily);
+      const daily = loadDaily();
+      const todayObj = daily[today] || { meditation: 0, journal: 0, mood: 0 };
+      todayObj.meditation += minutes;
+      daily[today] = todayObj;
+      saveDaily(daily);
 
-    // Mark meditation task as done
-    const tk = `user-${uid}-tasks-${today}`;
-    const taskObj = JSON.parse(localStorage.getItem(tk) || '{"meditation":false,"journal":false,"mood":false}');
-    taskObj.meditation = true;
-    localStorage.setItem(tk, JSON.stringify(taskObj));
-  }
+      const tk = `user-${uid}-tasks-${today}`;
+      const taskObj = JSON.parse(localStorage.getItem(tk) || '{"meditation":false,"journal":false,"mood":false}');
+      taskObj.meditation = true;
+      localStorage.setItem(tk, JSON.stringify(taskObj));
+    }
 
-  setMeditationStart(null);
-};
+    setMeditationStart(null);
+  };
 
-  // Detect video change to stop and save previous session
   useEffect(() => {
     const prev = prevVideoRef.current;
     if (prev !== null && prev !== activeVideo) stopAndSave();
@@ -142,31 +139,30 @@ export default function Meditations() {
     }
   }, [activeVideo]);
 
-  // Auto check every 2s if >10s passed
   useEffect(() => {
     if (!meditationStart) return;
     const interval = setInterval(() => {
       const diff = Date.now() - meditationStart;
       if (diff >= 10000) {
-        stopAndSave(); // This also sets meditationStart to null
+        stopAndSave(); // This sets meditationStart to null as well
       }
     }, 2000);
     return () => clearInterval(interval);
   }, [meditationStart]);
 
-  // Save meditation on page unload
   useEffect(() => {
     const handler = () => stopAndSave();
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, []);
 
-  // -- UI Rendering matches your previous setup --
   return (
     <div className="min-h-screen bg-backg text-darkblue py-20">
       <section className="max-w-6xl px-6 mx-auto md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-darkblue">Guided Meditation for Mental Wellness</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-darkblue">
+            Guided Meditation for Mental Wellness
+          </h1>
           <p className="mt-6 text-lg text-darkblue">Meditation is a practise, not perfection.</p>
         </div>
       </section>
@@ -183,16 +179,22 @@ export default function Meditations() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-6xl">
           {practices.map((item, index) => (
-            <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition-transform transform hover:scale-105 hover:shadow-xl">
+            <div
+              key={index}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition-transform transform hover:scale-105 hover:shadow-xl"
+            >
               {activeVideo === index ? (
-                <iframe className="w-full h-56"
+                <iframe
+                  className="w-full h-56"
                   src={`${item.videoUrl}?autoplay=1`}
                   title={item.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen>
-                </iframe>
+                  allowFullScreen
+                ></iframe>
               ) : (
-                <img src={item.thumbnail} alt={item.title}
+                <img
+                  src={item.thumbnail}
+                  alt={item.title}
                   className="h-48 w-full object-cover cursor-pointer"
                   onClick={() => setActiveVideo(index)}
                 />

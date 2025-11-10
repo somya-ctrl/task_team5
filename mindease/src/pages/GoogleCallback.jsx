@@ -6,15 +6,14 @@ export default function GoogleCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = params.get("token");
+    const token = params.get("token"); // access token from callback URL
     const name = params.get("name");
     const email = params.get("email");
     const photo = params.get("photo");
-    const id = params.get("id"); // EXTREMELY IMPORTANT
+    const id = params.get("id"); // required user id
 
     if (token && id) {
-
-      // ---- clean old storage ----
+      // Clear outdated localStorage keys for a fresh session
       Object.keys(localStorage).forEach((k) => {
         if (
           k.startsWith("user-null") ||
@@ -30,21 +29,20 @@ export default function GoogleCallback() {
         }
       });
 
-      // ---- save new correct user ----
-      localStorage.setItem("token", token);
+      // Save new user info and tokens
+      localStorage.setItem("accessToken", token);
 
       const userObj = {
-        id: id,     // must have id
-        name: name,
-        email: email,
-        photo: photo
+        id,
+        name,
+        email,
+        photo,
       };
-
       localStorage.setItem("user", JSON.stringify(userObj));
 
       navigate("/profession");
     }
-  }, []);
+  }, [params, navigate]);
 
   return <div>Loading...</div>;
 }

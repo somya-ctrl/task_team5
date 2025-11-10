@@ -11,8 +11,7 @@ const MiniQuizzes = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/quiz`)
-;
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/quiz`);
         setQuestions(res.data.questions.questions);
       } catch (error) {
         console.error("Failed to load questions:", error);
@@ -42,21 +41,16 @@ const MiniQuizzes = () => {
   };
 
   const handleSubmit = async () => {
-    if (
-      answers.length !== questions.length ||
-      answers.includes(undefined) ||
-      answers.includes("")
-    ) {
+    if (answers.length !== questions.length || answers.includes(undefined) || answers.includes("")) {
       alert("Please answer all questions before submitting.");
       return;
     }
 
-    
     const fixedAnswers = [...answers];
     fixedAnswers[0] = Number(fixedAnswers[0]);
 
-    
-    const token = localStorage.getItem("token");
+    // Use "accessToken" key here for consistency
+    const token = localStorage.getItem("accessToken");
 
     if (!token) {
       alert("You must be logged in to submit.");
@@ -78,7 +72,6 @@ const MiniQuizzes = () => {
 
       console.log("Submit Success:", response.data);
       navigate("/result", { state: response.data.result });
-
     } catch (err) {
       console.log("Submit Error:", err.response?.data || err.message);
       alert(err.response?.data?.error || "Submission failed. Try again.");
@@ -92,38 +85,27 @@ const MiniQuizzes = () => {
 
   return (
     <div className="min-h-screen bg-backg flex flex-col items-center pt-50 px-4">
-
       <div className="w-full max-w-3xl flex justify-between items-center mb-2 px-2">
         <p className="text-lg font-semibold text-darkblue">
           Question {currentIndex + 1} of {questions.length}
         </p>
-        <p className="text-md font-semibold text-lightgreen">
-          {Math.round(progressPercent)}% Complete
-        </p>
+        <p className="text-md font-semibold text-lightgreen">{Math.round(progressPercent)}% Complete</p>
       </div>
 
       <div className="w-full max-w-3xl h-3 bg-lightgrey rounded-full mb-6 overflow-hidden">
-        <div
-          className="h-full bg-lightgreen transition-all duration-300"
-          style={{ width: `${progressPercent}%` }}
-        ></div>
+        <div className="h-full bg-lightgreen transition-all duration-300" style={{ width: `${progressPercent}%` }}></div>
       </div>
 
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-8 border border-lightgrey">
-        <p className="text-xl font-medium text-darkblue mb-6">
-          {currentQuestion.questiontext}
-        </p>
+        <p className="text-xl font-medium text-darkblue mb-6">{currentQuestion.questiontext}</p>
 
         {currentQuestion.options ? (
           <div className="space-y-4">
             {currentQuestion.options.map((opt, idx) => (
               <label
                 key={idx}
-                className={`block border rounded-lg px-4 py-3 cursor-pointer transition
-                ${
-                  answers[currentIndex] === opt
-                    ? "border-lightgreen bg-lightgrey"
-                    : "border-lightgrey"
+                className={`block border rounded-lg px-4 py-3 cursor-pointer transition ${
+                  answers[currentIndex] === opt ? "border-lightgreen bg-lightgrey" : "border-lightgrey"
                 }`}
               >
                 <input

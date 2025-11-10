@@ -7,9 +7,9 @@ export const Journal = () => {
   const [date, setDate] = useState(() => new Date().toISOString().substr(0, 10));
   const [isToday, setIsToday] = useState(true);
   const [loading, setLoading] = useState(false);
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken"); // changed here
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const uid = user?.id;
 
@@ -40,7 +40,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     try {
       const res = await axios.get(
         `${BASE_URL}/getjournal?date=${date}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } } // updated token key here
       );
       if (res.data?.journals?.length > 0) setJournalText(res.data.journals[0].content);
       else setJournalText("");
@@ -49,7 +49,6 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     }
   };
 
-  
   const saveJournal = async () => {
     try {
       setLoading(true);
@@ -61,7 +60,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // updated token key here
           },
         }
       );
@@ -72,7 +71,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     setLoading(false);
   };
 
-  // typing tracking
+  // Typing tracking logic
   const [typingStart, setTypingStart] = useState(null);
   const [totalTypingTime, setTotalTypingTime] = useState(0);
 

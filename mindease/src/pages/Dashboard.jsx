@@ -15,10 +15,10 @@ import {
   FaAngry,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import Journal from "../assets/journal.png"
-import AI from "../assets/AI.png"
-import Quiz from "../assets/quiz.png"
-import Meditation from "../assets/meditation.png"
+import Journal from "../assets/journal.png";
+import AI from "../assets/AI.png";
+import Quiz from "../assets/quiz.png";
+import Meditation from "../assets/meditation.png";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -67,11 +67,14 @@ const streak = (daily, predicate) => {
 };
 
 const TASKS_KEY = (uid, d = todayISO()) => `user-${uid}-tasks-${d}`;
-const loadTasks = (uid, d = todayISO()) => JSON.parse(localStorage.getItem(TASKS_KEY(uid, d)) || '{"meditation":false,"journal":false,"mood":false}');
-const saveTasks = (uid, tasks, d = todayISO()) => localStorage.setItem(TASKS_KEY(uid, d), JSON.stringify(tasks));
+const loadTasks = (uid, d = todayISO()) =>
+  JSON.parse(localStorage.getItem(TASKS_KEY(uid, d)) || '{"meditation":false,"journal":false,"mood":false}');
+const saveTasks = (uid, tasks, d = todayISO()) =>
+  localStorage.setItem(TASKS_KEY(uid, d), JSON.stringify(tasks));
 
 const MOOD_KEY = (uid) => `user-${uid}-mood-history`;
-const loadMoodHistory = (uid) => JSON.parse(localStorage.getItem(MOOD_KEY(uid)) || '{"Happy":0,"Sad":0,"Anxious":0,"Calm":0,"Angry":0}');
+const loadMoodHistory = (uid) =>
+  JSON.parse(localStorage.getItem(MOOD_KEY(uid)) || '{"Happy":0,"Sad":0,"Anxious":0,"Calm":0,"Angry":0}');
 const saveMoodHistory = (uid, obj) => localStorage.setItem(MOOD_KEY(uid), JSON.stringify(obj));
 
 const ACTIVITY_KEY = (uid) => `user-${uid}-activity`;
@@ -92,17 +95,17 @@ const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
 const useDashboardData = (tasks) => {
   const [goals, setGoals] = useState([
     { id: 1, text: " Meditation", duration: "30 mins", done: tasks.meditation, auto: true },
-    { id: 2, text: "Journal Entry",  duration: "5 mins", done: tasks.journal,     auto: true },
-    { id: 3, text: "Mood Check",  duration: " ", done: tasks.mood,        auto: true },
+    { id: 2, text: "Journal Entry", duration: "5 mins", done: tasks.journal, auto: true },
+    { id: 3, text: "Mood Check", duration: " ", done: tasks.mood, auto: true },
   ]);
 
   useEffect(() => {
     setGoals((gs) =>
       gs.map((g) =>
         g.id === 1 ? { ...g, done: tasks.meditation }
-      : g.id === 2 ? { ...g, done: tasks.journal }
-      : g.id === 3 ? { ...g, done: tasks.mood }
-      : g
+          : g.id === 2 ? { ...g, done: tasks.journal }
+            : g.id === 3 ? { ...g, done: tasks.mood }
+              : g
       )
     );
   }, [tasks]);
@@ -118,7 +121,6 @@ function Gauge({ value }) {
   const v = clamp(value, 0, 100);
   const gaugePalette = ["#219654", "#48B6BC", "#C54E9E"];
   const segments = [33, 33, 34];
-
   const data = {
     labels: ["Good", "Okay", "Low"],
     datasets: [
@@ -140,13 +142,13 @@ function Gauge({ value }) {
   const angle = -90 + (180 * v) / 100;
 
   return (
-    <div className="relative w-full max-w-xl mx-auto aspect-[2/1]">
+    <div className="relative w-full max-w-xl mx-auto aspect-[2/1] sm:aspect-[3/2]">
       <Doughnut data={data} options={options} />
       <div
         className="absolute left-1/2 bottom-[18%] origin-bottom"
         style={{ transform: `translateX(-50%) rotate(${angle}deg)` }}
       >
-        <div className="h-28 w-1.5 bg-darkblue rounded-full" />
+        <div className="h-20 sm:h-28 w-1.5 bg-darkblue rounded-full" />
         <div className="h-3 w-3 -mt-1 rounded-full bg-darkblue mx-auto" />
       </div>
       <div className="absolute left-1/2 bottom-[18%] -translate-x-1/2 translate-y-1/2">
@@ -164,7 +166,7 @@ function TaskCompletionDonut({ percent }) {
     ],
   };
   return (
-    <div className="relative w-full h-64 flex items-center justify-center">
+    <div className="relative w-full h-48 sm:h-64 flex items-center justify-center">
       <Doughnut
         data={data}
         options={{
@@ -173,7 +175,7 @@ function TaskCompletionDonut({ percent }) {
           maintainAspectRatio: false,
         }}
       />
-      <div className="absolute text-2xl font-bold text-darkblue">{p}%</div>
+      <div className="absolute text-xl sm:text-2xl font-bold text-darkblue">{p}%</div>
     </div>
   );
 }
@@ -205,7 +207,7 @@ function MoodPie({ items }) {
   };
 
   return (
-    <div className="w-full h-64">
+    <div className="w-full h-48 sm:h-64">
       <Pie data={data} options={options} />
     </div>
   );
@@ -214,14 +216,15 @@ function MoodPie({ items }) {
 const BigAction = ({ img, label, onClick }) => (
   <button
     onClick={onClick}
-    className="flex flex-col items-center justify-end rounded-2xl bg-blend-color ring-1 ring-darkblue-200 hover:shadow-md transition w-50 h-45 ml-9 my-7"
+    className="flex flex-col items-center justify-end rounded-2xl bg-blend-color ring-1 ring-darkblue-200 hover:shadow-md transition w-full max-w-xs mx-auto h-44 sm:h-48 my-4"
   >
-    <div className="h-18 w-14 rounded-2xl bg-aquaGlow/15 flex items-center justify-center text-2xl">
-      <img src={img} alt={label} className="h-16 w-14 object-contain" />
+    <div className="h-16 w-16 rounded-2xl bg-aquaGlow/15 flex items-center justify-center text-2xl">
+      <img src={img} alt={label} className="h-12 w-12 object-contain" />
     </div>
-    <span className="mt-3 font-medium pb-6">{label}</span>
+    <span className="mt-3 font-medium pb-6 text-center">{label}</span>
   </button>
 );
+
 const Card = ({ title, children, className = "" }) => (
   <div className={`rounded-2xl bg-blend-color p-5 ${className}`}>
     {title && <h3 className="text-base font-semibold mb-3">{title}</h3>}
@@ -233,13 +236,13 @@ export default function Dashboard() {
   const user = getUser();
   const uid = user?.id;
   const userName = user?.name || "User";
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [score, setScore] = useState(0);
   useEffect(() => {
     axios
       .get("https://mindease-backend-cyvy.onrender.com/result", {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        headers: { Authorization: "Bearer " + localStorage.getItem("accessToken") },
       })
       .then((res) => setScore(res.data?.result?.score ?? 0))
       .catch(() => setScore(0));
@@ -274,8 +277,8 @@ export default function Dashboard() {
   };
 
   const { goals, toggleGoal } = useDashboardData(tasks);
-
   const [activity, setActivity] = useState(() => loadActivity(uid));
+
   useEffect(() => {
     const key = ACTIVITY_KEY(uid);
     const onStorage = (e) => {
@@ -303,17 +306,9 @@ export default function Dashboard() {
   const journalStreak = streak(daily, (d) => d.journal > 0);
   const moodStreak = streak(daily, (d) => d.mood > 0);
 
-  function formatTimeAgo(ts) {
-    const diff = Math.floor((Date.now() - ts) / 1000);
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return `${Math.floor(diff / 86400)}d ago`;
-  }
-
   return (
     <div className="min-h-screen bg-[#FAF5E6] text-slate-900">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-36 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-30 space-y-8">
         <section className="space-y-2">
           <h1 className="text-2xl sm:text-3xl font-semibold">
             Welcome back, <span className="font-bold">{userName}</span>
@@ -328,32 +323,16 @@ export default function Dashboard() {
           </Card>
         </section>
 
-       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <BigAction
-        label="Meditate"
-        img={Meditation}
-        onClick={() => navigate("/meditations")}
-      />
-      <BigAction
-        label="Journal"
-        img={Journal}
-        onClick={() => navigate("/journal")}
-      />
-      <BigAction
-        label="Mini Ques"
-        img={Quiz}
-        onClick={() => navigate("/miniques")}
-      />
-      <BigAction
-        label="AI Therapist"
-        img={AI}
-        onClick={() => navigate("/chat")}
-      />
-    </section>
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 px-4 sm:px-6 lg:px-8">
+          <BigAction label="Meditate" img={Meditation} onClick={() => navigate("/meditations")} />
+          <BigAction label="Journal" img={Journal} onClick={() => navigate("/journal")} />
+          <BigAction label="Mini Ques" img={Quiz} onClick={() => navigate("/miniques")} />
+          <BigAction label="AI Therapist" img={AI} onClick={() => navigate("/chat")} />
+        </section>
 
-        <section className="pt-10">
-          <h2 className="text-2xl font-semibold mb-10">Select your mood</h2>
-          <div className="grid grid-cols-5 gap-4">
+        <section className="pt-10 px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-semibold mb-6 sm:mb-10">Select your mood</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
             {[
               { icon: <FaSmile className="text-2xl" />, label: "Happy" },
               { icon: <FaSadTear className="text-2xl" />, label: "Sad" },
@@ -367,17 +346,15 @@ export default function Dashboard() {
                 className="border-2 border-aquaGlow rounded-lg py-4 text-lightgreen hover:bg-aquaGlow hover:text-white transition flex flex-col items-center"
               >
                 {item.icon}
-                <span className="text-sm text-darkblue pt-1 font-medium">
-                  {item.label}
-                </span>
+                <span className="text-sm text-darkblue pt-1 font-medium">{item.label}</span>
               </button>
             ))}
           </div>
         </section>
 
-        <section>
-          <h2 className="text-2xl font-semibold my-12">Analysis</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+        <section className="px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-semibold my-8 sm:my-12">Analysis</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <MoodPie
                 items={[
@@ -398,7 +375,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="grid md:grid-cols-2 gap-6">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8">
           <Card title="Today's Goals">
             <ul className="space-y-3">
               {goals.map((g) => (
@@ -428,9 +405,7 @@ export default function Dashboard() {
 
           <Card title="Recent Activity">
             <ul className="space-y-3">
-              {activity.length === 0 && (
-                <li className="text-slate-500">No recent activity</li>
-              )}
+              {activity.length === 0 && <li className="text-slate-500">No recent activity</li>}
               {activity.slice(0, 3).map((a, idx) => (
                 <li
                   key={a.ts ?? idx}
@@ -440,18 +415,16 @@ export default function Dashboard() {
                     <span className="text-lg">📝</span>
                     <p className="font-medium">{a.text}</p>
                   </div>
-                  <p className="text-xs text-slate-500">
-                    {a.meta}
-                  </p>
+                  <p className="text-xs text-slate-500">{a.meta}</p>
                 </li>
               ))}
             </ul>
           </Card>
         </section>
 
-        <section>
+        <section className="px-4 sm:px-6 lg:px-8">
           <h2 className="text-xl font-semibold mb-3">Overview</h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="rounded-2xl p-5 bg-lightgreen/30">
               <p className="text-sm">{medWeek} min</p>
               <p className="text-xs text-slate-700">Meditation this week</p>

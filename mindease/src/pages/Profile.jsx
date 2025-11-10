@@ -5,35 +5,56 @@ import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
-
   const userProfession = localStorage.getItem("profession") || "Not Set";
-  
- const [user, setUser] = useState({
-  fullName: storedUser.name || storedUser.fullName || "",
-  gender: storedUser.gender || "",
-  age: storedUser.age || "",
-  phone: storedUser.phone || "",
-  email: storedUser.email || "",
-  profession: userProfession,
-});
 
-
+  const [user, setUser] = useState({
+    fullName: storedUser.name || storedUser.fullName || "",
+    gender: storedUser.gender || "",
+    age: storedUser.age || "",
+    phone: storedUser.phone || "",
+    email: storedUser.email || "",
+    profession: userProfession,
+  });
   const [isEditing, setIsEditing] = useState(false);
-
+  const [phoneError, setPhoneError] = useState("");
 
   const profilePhoto =
-  storedUser.picture ||
-  storedUser.photoURL ||
-  storedUser.image ||
-  storedUser.photo || 
-  "";
+    storedUser.picture ||
+    storedUser.photoURL ||
+    storedUser.image ||
+    storedUser.photo || 
+    "";
 
+  const validateIndianMobile = (num) => {
+    const pattern = /^[6-9]\d{9}$/;
+    return pattern.test(num);
+  };
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length <= 10) {
+      setUser({ ...user, phone: value });
+      if (value.length === 10) {
+        if (!validateIndianMobile(value)) {
+          setPhoneError("Enter a valid Indian mobile number (starts with 6-9)");
+        } else {
+          setPhoneError("");
+        }
+      } else {
+        setPhoneError("");
+      }
+    }
+  };
+
   const handleSave = () => {
+    if (phoneError) {
+      alert("Please fix input errors before saving.");
+      return;
+    }
     const updatedUser = { ...user };
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -60,21 +81,19 @@ const Profile = () => {
 
         <div className="bg-white rounded-lg p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4">
-          {profilePhoto ? (
-  <img
-    src={profilePhoto}
-    alt="profile"
-    className="w-20 h-20 rounded-full object-cover"
-  />
-) : (
-  <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
-)}
-
+            {profilePhoto ? (
+              <img
+                src={profilePhoto}
+                alt="profile"
+                className="w-20 h-20 rounded-full object-cover"
+              />
+            ) : (
+              <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
+            )}
 
             <div className="text-center sm:text-left">
               <h2 className="text-xl font-semibold">{user.fullName}</h2>
               <p className="text-gray-600 break-all">{user.email}</p>
-              
             </div>
           </div>
 
@@ -142,19 +161,17 @@ const Profile = () => {
             <div>
               <p className="text-gray-600 font-semibold">Phone No</p>
               {isEditing ? (
-                <input
-                  type="text"
-                  name="phone"
-                  value={user.phone}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    if (value.length <= 10) {
-                      setUser({ ...user, phone: value });
-                    }
-                  }}
-                  maxLength={10}
-                  className="border p-2 rounded w-full"
-                />
+                <>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={user.phone}
+                    onChange={handlePhoneChange}
+                    maxLength={10}
+                    className={`border p-2 rounded w-full ${phoneError ? "border-red-500" : ""}`}
+                  />
+                  {phoneError && <p className="text-red-600 mt-1 text-sm">{phoneError}</p>}
+                </>
               ) : (
                 <p className="font-medium">{user.phone}</p>
               )}
@@ -179,7 +196,6 @@ const Profile = () => {
               <p className="text-gray-600 font-semibold">Email</p>
               <p className="font-medium break-all">{user.email}</p>
             </div>
-
           </div>
         </div>
       </div>

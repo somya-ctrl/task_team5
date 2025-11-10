@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../api";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Man from "../assets/man.jpg"
-import Woman from "../assets/woman.jpg"
-import Logp from "../assets/logp.jpg"
-
+import Man from "../assets/man.jpg";
+import Woman from "../assets/woman.jpg";
+import Logp from "../assets/logp.jpg";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,16 +20,15 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
- const images = [Man, Woman, Logp];
+  const images = [Man, Woman, Logp];
+  const [currentImg, setCurrentImg] = useState(0);
 
-const [currentImg, setCurrentImg] = useState(0);
-
-useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentImg(prev => (prev + 1) % images.length);
-  }, 4000);
-  return () => clearInterval(interval);
-}, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImg((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,13 +68,30 @@ useEffect(() => {
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
       await registerUser({
         name: formData.name,
         email: formData.email,
         password: formData.password,
       });
+
+      
+      Object.keys(localStorage).forEach((k) => {
+        if (
+          k.startsWith("user-null") ||
+          k.startsWith("user-undefined") ||
+          k.startsWith("meditation-done") ||
+          k.startsWith("journal-done") ||
+          k.startsWith("mood-check-done") ||
+          k.startsWith("mood-history") ||
+          k === "name" ||
+          k === "photo"
+        ) {
+          localStorage.removeItem(k);
+        }
+      });
+
       navigate("/login");
     } catch (err) {
       console.log(err.response?.data || err.message);
@@ -88,8 +103,6 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen w-full flex bg-backg overflow-hidden">
-
-      
       <div className="hidden md:block w-1/2 h-screen p-5">
         <img
           src={images[currentImg]}
@@ -98,28 +111,30 @@ useEffect(() => {
         />
       </div>
 
-      
       <div className="flex items-center justify-between w-full md:w-1/2 p-6 relative">
-
-
-        <div className="z-10 bg-blend-color text-darkblue p-8  w-full max-w-xl">
-
+        <div className="z-10 bg-blend-color text-darkblue p-8 w-full max-w-xl">
           <h1 className="text-3xl font-bold mb-2">
             Join us <br />
             <span>Create your account</span>
           </h1>
 
-          <p className="text-darkblue text-lg font-bold mt-3 mb-6">Its nice to see you again.</p>
+          <p className="text-darkblue text-lg font-bold mt-3 mb-6">
+            Its nice to see you again.
+          </p>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <input type="text" placeholder="Full Name"
+            <input
+              type="text"
+              placeholder="Full Name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-6 py-2 rounded-md bg-white-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
               required
             />
 
-            <input type="email" placeholder="Email address"
+            <input
+              type="email"
+              placeholder="Email address"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-4 py-2 rounded-md bg-white-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
@@ -127,52 +142,56 @@ useEffect(() => {
             />
 
             <div className="relative">
-              <input type={showPassword ? "text" : "password"} placeholder="Password"
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="w-full px-4 py-2 rounded-md bg-white-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
                 required
               />
-             <span
-
-className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-darkblue"
-  onClick={() => setShowPassword(!showPassword)}
-
->
-  {showPassword ? <FaEye size={20}/>   :  <FaEyeSlash size={20}/> }
-</span>
-
+              <span
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-darkblue"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+              </span>
             </div>
 
             <div className="relative">
-              <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm Password"
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 className="w-full px-4 py-2 rounded-md bg-white-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
                 required
               />
-            <span
-  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-darkblue"
-  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
->
-  {showConfirmPassword ?<FaEye size={20}/>   : <FaEyeSlash size={20}/>  }
-</span>
-
+              <span
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-darkblue"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
+              </span>
             </div>
 
             {error && <p className="text-red-500 text-center">{error}</p>}
 
-            <button type="submit" disabled={loading}
-              className="w-full py-2 mt-2 bg-lightgreen text-white font-semibold rounded-md hover:bg-pinkGlow transition">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 mt-2 bg-lightgreen text-white font-semibold rounded-md hover:bg-pinkGlow transition"
+            >
               {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
           <p className="mt-6 text-center text-darkblue">
             Already have an account?{" "}
-            <Link to="/login" className="text-pinkGlow hover:underline">Log In</Link>
+            <Link to="/login" className="text-pinkGlow hover:underline">
+              Log In
+            </Link>
           </p>
-
         </div>
       </div>
     </div>
