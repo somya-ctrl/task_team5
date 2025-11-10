@@ -7,9 +7,12 @@ let lastResult = null;
 const User = require('../models/user');
 const Quiz = require('../models/quiz');
 const Journal = require('../models/journal');
+const studentquiz = require('../models/studentquiz');
 const questions = require('../questions/ques');
+
 const jwt = require('jsonwebtoken');
 const admin = require("firebase-admin");
+const { questionnew } = require('../questions/studentques');
 async function createUser(req, res) {
    
     try {
@@ -88,6 +91,18 @@ const createquiz = async (req, res) => {
     res.status(500).json({ error: "Failed to load questions" });
   }
 };
+const createstudentquiz = async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      count: questionnew.length,
+      questions: questionnew
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to load questions" });
+  }
+};
+
 
 const submitquiz = async (req, res) => {
   try {
@@ -314,4 +329,4 @@ async function logout(req, res) {
   }
 }
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout };
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout , createstudentquiz };
