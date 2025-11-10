@@ -11,7 +11,8 @@ const MiniQuizzes = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await axios.get("https://mindease-backend-cyvy.onrender.com/quiz");
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/quiz`)
+;
         setQuestions(res.data.questions.questions);
       } catch (error) {
         console.error("Failed to load questions:", error);
@@ -66,7 +67,7 @@ const MiniQuizzes = () => {
       console.log("Sending to backend:", fixedAnswers);
 
       const response = await axios.post(
-        "https://mindease-backend-cyvy.onrender.com/submit",
+        `${import.meta.env.VITE_API_BASE_URL}/submit`,
         { answers: fixedAnswers },
         {
           headers: {

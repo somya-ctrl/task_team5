@@ -44,29 +44,20 @@ const AppWrapper = () => {
   return (
     <Routes>
 
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/" element={<Navigate to="/landing" />} />
 
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
 
       <Route path="/google/callback" element={<GoogleCallback />} />
 
-
-      <Route
-        path="/landing"
-        element={
-          <PrivateRoute>
-            <>
-              <Navbar />
-              <Landing />
+ <Route path="/landing" element={<>
+ 
+  
+              < Landing/>
               <Footer />
-            </>
-          </PrivateRoute>
-        }
-      />
-
-
-
+ 
+ </>} />
       <Route
         path="/dashboard"
         element={
@@ -167,7 +158,7 @@ const AppWrapper = () => {
           <>
             <Navbar />
             <Aboutus />
-            <Footer />
+        
           </>
         }
       />

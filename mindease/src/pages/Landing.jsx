@@ -3,11 +3,17 @@ import {  useNavigate } from "react-router-dom";
 import Mountain from '../assets/mountain.jpg'
 import Shape from '../assets/shape.jpg'
 import { useRef } from "react";
-import Guided from "../assets/Guided.png"
+import ai from "../assets/AI.png"
+import Journal from "../assets/journal.png"
+import Meditation from "../assets/meditation.png"
+import Quiz from "../assets/quiz.png"
+import Mood from "../assets/Mood.png"
+import Community from "../assets/Community.png"
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-export default function Dashboard() {
+export default function Landing() {
   
   const featuresRef = useRef(null);
 const navigate = useNavigate();
@@ -25,7 +31,7 @@ const handleScrollToFeatures = () => {
     <div className="min-h-screen bg-backg text-darkblue">
       
 
-      <main className="hero-bg mt-22">
+      <main className="hero-bg ">
         <section className="max-w-6xl px-6 mx-auto md:px-12 py-13">
           <div className="max-w-5xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-center text-darkblue">
@@ -41,8 +47,18 @@ const handleScrollToFeatures = () => {
               community to help you navigate life’s challenges with calm and clarity.
             </p>
 
-            <div className="mt-15 pb-6 flex flex-wrap items-center justify-center gap-6">
+            <div className="mt-15 pb-6 flex flex-wrap items-center justify-center gap-20">
               
+
+
+
+              <button
+                onClick={() => navigate("/register")} 
+                className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-aquaGlow text-black font-semibold text-xl hover:bg-pinkGlow transition shadow-sm"
+              >
+                Sign up
+              </button>
+
 
               <button
                 onClick={handleScrollToFeatures}
@@ -72,7 +88,7 @@ const handleScrollToFeatures = () => {
               
               <div className="w-16 h-20 mx-auto mb-4">
 
-                <img src={Guided}  
+                <img src={Meditation}  
               alt="Guided Meditations"
 className="rounded-3xl w-20 h-16 shadow-lg"/>
               </div>
@@ -86,10 +102,16 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
             </div>
 
                 <div 
-            onClick={() => navigate("/miniques")}   
+         
             className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue cursor-pointer"
           >
-            <div className="w-16 h-20 mx-auto mb-4"></div>
+            <div className="w-16 h-20 mx-auto mb-4">
+
+           <img src={Quiz}  
+              alt="Mental Wellness Check"
+className="rounded-3xl w-20 h-16 shadow-lg"/>  
+
+            </div>
             <h4 className="text-xl font-bold text-darkblue mb-2">
               Mental Wellness Check
             </h4>
@@ -99,7 +121,12 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
           </div>
 
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
-              <div className="w-16 h-20 mx-auto mb-4">
+              <div className="w-16 h-20 mx-auto mb-4"
+              >
+
+                  <img src={Mood}  
+              alt="Mental Wellness Check"
+className="rounded-3xl w-20 h-16 shadow-lg"/>    
                 
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
@@ -113,7 +140,9 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
             
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
               <div className="w-16 h-20 mx-auto mb-4">
-               
+                 <img src={Journal}  
+              alt="Mental Wellness Check"
+className="rounded-3xl w-20 h-16 shadow-lg"/>    
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
                 Daily Journal
@@ -126,7 +155,9 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
           
             <div  onClick={() => navigate("/chat")}  className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
               <div className="w-16 h-20 mx-auto mb-4">
-               
+                 <img src={ai}  
+              alt="Mental Wellness Check"
+className="rounded-3xl w-20 h-16 shadow-lg"/>    
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
                 AI Companion
@@ -139,7 +170,9 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
         
             <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
               <div className="w-16 h-20 mx-auto mb-4">
-              
+                <img src={Community}  
+              alt="Mental Wellness Check"
+className="rounded-3xl w-20 h-16 shadow-lg"/>    
               </div>
               <h4 className="text-xl font-bold text-darkblue mb-2">
                 Community Space

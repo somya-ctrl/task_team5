@@ -8,7 +8,7 @@ export default function Result() {
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-  axios.get("https://mindease-backend-cyvy.onrender.com/result", {
+  axios.get(`${import.meta.env.VITE_API_BASE_URL}/result`, {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
     }

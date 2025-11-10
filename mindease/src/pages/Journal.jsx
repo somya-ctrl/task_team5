@@ -6,6 +6,8 @@ export const Journal = () => {
   const [journalText, setJournalText] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().substr(0, 10));
   const [isToday, setIsToday] = useState(true);
+  const [loading, setLoading] = useState(false);
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -17,7 +19,6 @@ export const Journal = () => {
   const loadDaily = () => JSON.parse(localStorage.getItem(dailyKey) || "{}");
   const saveDaily = (obj) => localStorage.setItem(dailyKey, JSON.stringify(obj));
 
-  // Stable addActivity function
   const addActivity = useCallback((uid, text, meta = "") => {
     const key = `user-${uid}-activity`;
     const arr = JSON.parse(localStorage.getItem(key) || "[]");
@@ -26,7 +27,6 @@ export const Journal = () => {
     localStorage.setItem(key, JSON.stringify(arr));
   }, []);
 
-  // Log journal page opened activity
   useEffect(() => {
     if (uid) addActivity(uid, "Journal Opened", "");
   }, [uid, addActivity]);
@@ -34,14 +34,12 @@ export const Journal = () => {
   useEffect(() => {
     setIsToday(date === today);
     fetchJournal();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
-  // Fetch journal content
   const fetchJournal = async () => {
     try {
       const res = await axios.get(
-        `https://mindease-backend-cyvy.onrender.com/getjournal?date=${date}`,
+        `${BASE_URL}/getjournal?date=${date}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data?.journals?.length > 0) setJournalText(res.data.journals[0].content);
@@ -51,11 +49,33 @@ export const Journal = () => {
     }
   };
 
-  // Typing time tracking
+  
+  const saveJournal = async () => {
+    try {
+      setLoading(true);
+      await axios.post(
+        `${BASE_URL}/journal`,
+        {
+          content: journalText,
+          date: date,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Journal Saved ✅");
+    } catch (err) {
+      alert("Failed to save");
+    }
+    setLoading(false);
+  };
+
+  // typing tracking
   const [typingStart, setTypingStart] = useState(null);
   const [totalTypingTime, setTotalTypingTime] = useState(0);
 
-  // Handle typing input
   const handleTyping = (e) => {
     setJournalText(e.target.value);
     if (!typingStart) setTypingStart(Date.now());
@@ -69,7 +89,6 @@ export const Journal = () => {
 
   const handleBlur = () => setTypingStart(null);
 
-  // Mark journal task done and log session if total typing time >= 10 seconds
   useEffect(() => {
     if (totalTypingTime >= 10000) {
       const seconds = Math.floor(totalTypingTime / 1000);
@@ -79,7 +98,6 @@ export const Journal = () => {
 
       addActivity(uid, "Completed Journal Entry", timeString);
 
-      // Mark task done
       const tk = `user-${uid}-tasks-${today}`;
       const taskObj = JSON.parse(localStorage.getItem(tk) || '{"meditation":false,"journal":false,"mood":false}');
       taskObj.journal = true;
@@ -87,7 +105,6 @@ export const Journal = () => {
     }
   }, [totalTypingTime, uid, today, addActivity]);
 
-  // Update daily journal time in minutes every 10 seconds during typing
   useEffect(() => {
     const timer = setInterval(() => {
       if (!typingStart) return;
@@ -103,7 +120,6 @@ export const Journal = () => {
         daily[today] = todayObj;
         saveDaily(daily);
 
-        // Reset counters
         setTotalTypingTime(0);
         setTypingStart(Date.now());
       }
@@ -141,10 +157,11 @@ export const Journal = () => {
         <div className="text-center mt-5">
           {isToday && (
             <button
-              onClick={fetchJournal}
+              onClick={saveJournal}
               className="bg-lightgreen text-white font-medium py-2 px-8 rounded-full hover:bg-aquaGlow transition"
+              disabled={loading}
             >
-              Analyse Text
+              {loading ? "Saving..." : "Save Journal"}
             </button>
           )}
         </div>
