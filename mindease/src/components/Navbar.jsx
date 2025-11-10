@@ -17,7 +17,7 @@ const Navbar = () => {
           
           <div className="hidden md:flex items-center gap-8 text-sm">
             <Link
-              to="/landing"
+              to="/dashboard"
               className="text-darkblue text-lg hover:text-aquaGlow transition font-bold"
             >
               Home
@@ -35,10 +35,10 @@ const Navbar = () => {
               Meditations
             </Link>
             <Link
-              to="/mooddetection"
+              to="/chat"
               className="text-darkblue text-lg hover:text-aquaGlow transition font-bold"
             >
-              Mood Detection
+              AI Therapist
             </Link>
             <Link
               to="/profile"

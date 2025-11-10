@@ -13,7 +13,6 @@ import MoodDetection from "./pages/MoodDetection";
 import Profile from "./pages/Profile";
 import MiniQuizzes from "./pages/MiniQuizzes";
 import Aboutus from "./pages/About";
-import Chatbot from "./pages/Chatbot";
 import Result from "./pages/Result";
 import GoogleCallback from "./pages/GoogleCallback"; 
 import Profession from "./pages/Profession";
@@ -66,6 +65,22 @@ const AppWrapper = () => {
         }
       />
 
+
+
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <>
+              <Navbar />
+              < Dashboard/>
+              <Footer />
+            </>
+          </PrivateRoute>
+        }
+      />
+
+
  <Route
         path="/profession"
         element={
@@ -107,18 +122,6 @@ const AppWrapper = () => {
       />
 
 
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <>
-              <Navbar />
-              <Dashboard />
-              <Footer />
-            </>
-          </PrivateRoute>
-        }
-      />
 
 
       <Route
@@ -182,18 +185,8 @@ const AppWrapper = () => {
       />
 
     
-      <Route
-        path="/chatbot"
-        element={
-          <PrivateRoute>
-            <>
-              
-              <Chatbot />
-              
-            </>
-          </PrivateRoute>
-        }
-      />
+      
+    
 
       
       <Route

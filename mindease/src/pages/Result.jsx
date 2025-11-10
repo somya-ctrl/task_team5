@@ -65,7 +65,7 @@ useEffect(() => {
         </div>
 
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/dashboard")}
           className="px-6 py-2 bg-lightgreen hover:bg-aquaGlow text-white rounded-lg transition duration-200"
         >
           Go to Dashboard

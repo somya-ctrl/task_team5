@@ -55,10 +55,25 @@ const Login = () => {
       );
 
       const { user, token } = res.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      Object.keys(localStorage).forEach((k) => {
+      if (
+        k.startsWith("user-null") ||
+        k.startsWith("user-undefined") ||
+        k.startsWith("meditation-done") ||
+        k.startsWith("journal-done") ||
+        k.startsWith("mood-check-done") ||
+        k.startsWith("mood-history") ||
+        k === "name" ||
+        k === "photo"
+      ) {
+        localStorage.removeItem(k);
+      }
+    });
 
-      navigate("/profession");
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    navigate("/profession");
     } catch (err) {
       setError("Invalid email or password");
     } finally {
@@ -105,7 +120,7 @@ const Login = () => {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="w-full px-4 py-2 rounded-md bg-white border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
+              className="w-full px-4 py-2 rounded-md bg- border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
               required
             />
 
@@ -117,7 +132,7 @@ const Login = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full px-4 py-2 rounded-md bg-white border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
+                className="w-full px-4 py-2 rounded-md bg-white-200 border border-lightgreen text-darkblue placeholder-darkblue focus:outline-none focus:ring-2 focus:ring-pinkGlow"
                 required
               />
 
