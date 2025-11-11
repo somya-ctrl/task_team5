@@ -1,33 +1,16 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const QuestionSchema = new mongoose.Schema({
-  field: {
-    type: String,
-    required: true,
-    unique: true, // each field name like "anxiety_level" should be unique
+const studentQuizSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  prediction: { type: Number, required: true },
+  stress_level: { type: String, required: true },
+  confidence: {
+    low: Number,
+    moderate: Number,
+    high: Number,
   },
-  question: {
-    type: String,
-    required: true,
-  },
-  min: {
-    type: Number,
-    required: false, // only for questions with scale
-  },
-  max: {
-    type: Number,
-    required: false,
-  },
-  scale: {
-    type: Map,
-    of: String, // e.g., { "0": "Never", "5": "Very often" }
-    required: false,
-  },
-  options: {
-    type: Map,
-    of: String, // e.g., { "0": "No", "1": "Yes" }
-    required: false,
-  },
-});
+  stress_score: { type: Number },
+  recommendation: { type: String },
+}, { timestamps: true });
 
-module.exports = mongoose.model("Question", QuestionSchema);
+module.exports = mongoose.model('studentquiz', studentQuizSchema);

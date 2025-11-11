@@ -207,23 +207,49 @@ const createstudentquiz = async (req, res) => {
   }
 };
 
-
 const submitStudentQuiz = async (req, res) => {
   try {
     const answers = req.body;
+    const userId = req.user.id;
+
     if (!answers || Object.keys(answers).length === 0) {
       return res.status(400).json({
         success: false,
         error: "Please provide all quiz answers in JSON format",
       });
     }
-    const mlResponse = await axios.post(
-      "https://student-stress-api-dvo8.onrender.com/predict", 
+      const mlResponse = await axios.post(
+      "https://student-stress-api-dvo8.onrender.com/predict",
       answers,
       { headers: { "Content-Type": "application/json" } }
     );
-    res.json(mlResponse.data);
 
+    const {
+      prediction,
+      stress_level,
+      confidence,
+      stress_score,
+      recommendation,
+    } = mlResponse.data;
+
+  
+    const newResult = new studentquiz({
+      userId,
+      prediction,
+      stress_level,
+      confidence,
+      stress_score,
+      recommendation,
+    });
+
+    await newResult.save();
+
+    
+    res.json({
+      success: true,
+      message: "Quiz submitted and result saved successfully",
+      result: newResult,
+    });
   } catch (error) {
     console.error("Error in submitStudentQuiz:", error.message);
     res.status(500).json({
@@ -233,6 +259,33 @@ const submitStudentQuiz = async (req, res) => {
     });
   }
 };
+
+async function getStuResult(req, res) {
+  try {
+    const userId = req.user?.id || req.params.userId;
+    const latestResult = await studentquiz.findOne({ userId }).sort({ createdAt: -1 });
+
+    if (!latestResult) {
+      return res.status(404).json({
+        success: false,
+        message: "No quiz result found for this user",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      result: latestResult,
+    });
+  } catch (error) {
+    console.error("Error fetching quiz result:", error.message);
+    res.status(500).json({
+      success: false,
+      error: "Failed to fetch quiz result",
+      details: error.message,
+    });
+  }
+}
+
 
 
 async function createJournal(req, res) {
@@ -357,4 +410,4 @@ async function logout(req, res) {
   }
 }
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout , createstudentquiz,submitStudentQuiz };
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout , createstudentquiz,submitStudentQuiz,getStuResult };
