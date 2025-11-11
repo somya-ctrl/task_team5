@@ -91,17 +91,7 @@ const createquiz = async (req, res) => {
     res.status(500).json({ error: "Failed to load questions" });
   }
 };
-const createstudentquiz = async (req, res) => {
-  try {
-    res.json({
-      success: true,
-      count: questionnew.length,
-      questions: questionnew
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to load questions" });
-  }
-};
+
 
 
 const submitquiz = async (req, res) => {
@@ -205,6 +195,44 @@ async function getQuizResult(req, res) {
     res.status(500).json({ error: "Server error" });
   }
 }
+const createstudentquiz = async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      count: questionnew.length,
+      questions: questionnew
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to load questions" });
+  }
+};
+
+
+const submitStudentQuiz = async (req, res) => {
+  try {
+    const answers = req.body;
+    if (!answers || Object.keys(answers).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Please provide all quiz answers in JSON format",
+      });
+    }
+    const mlResponse = await axios.post(
+      "https://student-stress-api-dvo8.onrender.com/predict", 
+      answers,
+      { headers: { "Content-Type": "application/json" } }
+    );
+    res.json(mlResponse.data);
+
+  } catch (error) {
+    console.error("Error in submitStudentQuiz:", error.message);
+    res.status(500).json({
+      success: false,
+      error: "Failed to get prediction from ML API",
+      details: error.message,
+    });
+  }
+};
 
 
 async function createJournal(req, res) {
@@ -329,4 +357,4 @@ async function logout(req, res) {
   }
 }
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout , createstudentquiz };
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout , createstudentquiz,submitStudentQuiz };
