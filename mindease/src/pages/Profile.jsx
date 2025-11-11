@@ -88,8 +88,8 @@ const Profile = () => {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">
-      <div className="absolute left-0 top-0 w-1/2 h-full bg-lightgreen/40"></div>
-      <div className="absolute right-0 top-0 w-1/2 h-full bg-pinkGlow/40"></div>
+      <div className="absolute left-0 top-0 w-1/2 h-full bg-darkblue"></div>
+      <div className="absolute right-0 top-0 w-1/2 h-full bg-lightgreen"></div>
 
       <div className="relative z-10 w-full max-w-4xl bg-backg p-4 sm:p-10 rounded-lg shadow-xl">
         <h1 className="text-3xl font-bold text-darkblue mb-6 text-center sm:text-left">My Profile</h1>

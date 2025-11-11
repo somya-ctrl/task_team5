@@ -162,7 +162,7 @@ const Login = () => {
 
           <button
             onClick={handleGoogleLogin}
-            className="w-full border border-darkblue bg-aquaGlow text-white py-2 rounded font-semibold flex items-center justify-center gap-3 hover:bg-pinkGlow transition"
+            className="w-full border border-darkblue bg-aquaGlow text-white py-2 rounded font-semibold flex items-center justify-center gap-3 hover:bg-pinkGlow transition border-none"
           >
             <FaGoogle /> Continue with Google
           </button>

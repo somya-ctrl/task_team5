@@ -6,6 +6,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import axios from "axios";
 import {
   FaSmile,
@@ -20,7 +21,7 @@ import AI from "../assets/AI.png";
 import Quiz from "../assets/quiz.png";
 import Meditation from "../assets/meditation.png";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const getUser = () => JSON.parse(localStorage.getItem("user") || "{}");
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -120,10 +121,12 @@ const useDashboardData = (tasks) => {
 
 function Gauge({ value }) {
   const v = clamp(value, 0, 100);
-  const gaugePalette = ["#219654", "#48B6BC", "#C54E9E"];
+  const gaugePalette = ["#219654", "#FFFF00", "#880808"];
   const segments = [33, 33, 34];
+  const labels = ["Good", "Mid", "Bad"];
+
   const data = {
-    labels: ["Good", "Okay", "Low"],
+    labels,
     datasets: [
       {
         data: segments,
@@ -135,16 +138,29 @@ function Gauge({ value }) {
       },
     ],
   };
+
   const options = {
-    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
+      datalabels: {
+        color: "#000", // label color
+        font: { weight: "bold", size: 20 },
+        formatter: (value, context) => context.chart.data.labels[context.dataIndex],
+        anchor: "center",
+        align: "center",
+      },
+    },
     responsive: true,
     maintainAspectRatio: false,
   };
+
   const angle = -90 + (180 * v) / 100;
 
   return (
     <div className="relative w-full max-w-xl mx-auto aspect-[2/1] sm:aspect-[3/2]">
       <Doughnut data={data} options={options} />
+      {/* Needle */}
       <div
         className="absolute left-1/2 bottom-[18%] origin-bottom"
         style={{ transform: `translateX(-50%) rotate(${angle}deg)` }}
@@ -152,6 +168,7 @@ function Gauge({ value }) {
         <div className="h-20 sm:h-28 w-1.5 bg-darkblue rounded-full" />
         <div className="h-3 w-3 -mt-1 rounded-full bg-darkblue mx-auto" />
       </div>
+      {/* Center circle */}
       <div className="absolute left-1/2 bottom-[18%] -translate-x-1/2 translate-y-1/2">
         <div className="h-6 w-6 rounded-full bg-white ring-2 ring-darkblue" />
       </div>
@@ -217,7 +234,7 @@ function MoodPie({ items }) {
 const BigAction = ({ img, label, onClick }) => (
   <button
     onClick={onClick}
-    className="flex flex-col items-center justify-end rounded-2xl bg-blend-color ring-1 ring-darkblue-200 hover:shadow-md transition w-full max-w-xs mx-auto h-44 sm:h-48 my-4"
+    className="flex flex-col items-center justify-end rounded-2xl bg-blend-color ring-1 ring-darkblue-200 hover:shadow-lg transition w-full max-w-xs mx-auto h-44 sm:h-48 my-4"
   >
     <div className="h-16 w-16 rounded-2xl bg-aquaGlow/15 flex items-center justify-center text-2xl">
       <img src={img} alt={label} className="h-12 w-12 object-contain" />
@@ -319,7 +336,7 @@ useEffect(() => {
           <Card>
             <Gauge value={score} />
             <div className="text-center mt-4">
-              <p className="text-sm text-slate-600">Your Mental Health Score</p>
+              <p className="text-md text-slate-600">Your Mental Health Score</p>
               <p className="text-3xl font-extrabold mt-1">{score}%</p>
             </div>
           </Card>

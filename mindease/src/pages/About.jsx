@@ -14,7 +14,9 @@ export default function About() {
           <img
             src={Abot}
             alt="Plants Row"
-            className="w-full h-auto rounded-xl shadow-lg"
+           className="fixed top-0 left-0 w-screen h-screen object-cover "
+
+
           />
 
           {/* text overlay */}

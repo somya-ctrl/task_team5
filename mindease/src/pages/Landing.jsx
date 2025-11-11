@@ -10,9 +10,6 @@ import Quiz from "../assets/quiz.png"
 import Mood from "../assets/Mood.png"
 import Community from "../assets/Community.png"
 
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-
 export default function Landing() {
   
   const featuresRef = useRef(null);
@@ -47,23 +44,25 @@ const handleScrollToFeatures = () => {
               community to help you navigate life’s challenges with calm and clarity.
             </p>
 
-            <div className="mt-15 pb-6 flex flex-wrap items-center justify-center gap-20">
+            <div className="mt-15 pb-6 flex flex-wrap items-center justify-center gap-15">
               
 
 
+<button
+  onClick={() => navigate("/register")}
+  className="relative inline-flex px-8 py-3 text-xl font-semibold text-black border-[3px] border-darkblue bg-transparent overflow-hidden z-[1] cursor-pointer font-inherit 
+  before:content-[''] before:absolute before:left-0 before:top-0 before:w-full before:h-full before:bg-[#C54E9E] before:-translate-x-full before:transition-all before:duration-300 before:-z-[1] hover:before:translate-x-0"
+>
+  Button Text
+</button>
 
-              <button
-                onClick={() => navigate("/register")} 
-                className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-aquaGlow text-black font-semibold text-xl hover:bg-pinkGlow transition shadow-sm"
-              >
-                Sign up
-              </button>
 
 
               <button
                 onClick={handleScrollToFeatures}
-                className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-aquaGlow text-black font-semibold text-xl hover:bg-pinkGlow transition shadow-sm"
-              >
+             className="relative inline-flex px-8 py-3 text-xl font-semibold text-black border-[3px] border-darkblue bg-transparent overflow-hidden z-[1] cursor-pointer font-inherit 
+  before:content-[''] before:absolute before:left-0 before:top-0 before:w-full before:h-full before:bg-[#C54E9E] before:-translate-x-full before:transition-all before:duration-300 before:-z-[1] hover:before:translate-x-0"
+>
                 Explore Features
               </button>
             </div>
@@ -71,22 +70,23 @@ const handleScrollToFeatures = () => {
 
         
           <div className="mt-12 text-center">
-            <h3 className="text-4xl font-bold text-darkblue">
+            <h3 className="text-5xl font-bold text-darkblue">
               Everything you need for <span className="text-aquaGlow">wellness</span>
             </h3>
-            <p className="mt-2 text-darkblue mx-auto">
+            <p className="mt-6 text-darkblue text-md mx-auto">
               Comprehensive tools and resources to support your mental health journey.
             </p>
           </div>
         </section>
 
         
-        <section ref={featuresRef} className="max-w-6xl mx-auto px-6 md:px-12 py-14">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 ">
-            
-            <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
-              
-              <div className="w-16 h-20 mx-auto mb-4">
+        <section ref={featuresRef} className="max-w-7xl mx-auto px-6 md:px-12 py-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-18 ">
+
+           <div className="bg-backg rounded-2xl shadow-md shadow-black/40 p-6 text-center transform transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-black/70 border-2 border-darkblue border-opacity-100 hover:border-opacity-40">
+
+
+    <div className="w-16 h-20 mx-auto mb-4">
 
                 <img src={Meditation}  
               alt="Guided Meditations"
@@ -99,12 +99,12 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
                 Calm your mind with guided sessions designed to reduce stress and
                 increase focus.
               </p>
-            </div>
+</div>
 
-                <div 
-         
-            className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue cursor-pointer"
-          >
+
+                 <div className="bg-backg rounded-2xl shadow-md shadow-black/40 p-6 text-center transform transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-black/70 border-2 border-darkblue border-opacity-100 hover:border-opacity-40">
+
+
             <div className="w-16 h-20 mx-auto mb-4">
 
            <img src={Quiz}  
@@ -120,7 +120,9 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
             </p>
           </div>
 
-            <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
+              <div className="bg-backg rounded-2xl shadow-md shadow-black/40 p-6 text-center transform transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-black/70 border-2 border-darkblue border-opacity-100 hover:border-opacity-40">
+
+
               <div className="w-16 h-20 mx-auto mb-4"
               >
 
@@ -138,7 +140,9 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
             </div>
 
             
-            <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
+              <div className="bg-backg rounded-2xl shadow-md shadow-black/40 p-6 text-center transform transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-black/70 border-2 border-darkblue border-opacity-100 hover:border-opacity-40">
+
+
               <div className="w-16 h-20 mx-auto mb-4">
                  <img src={Journal}  
               alt="Mental Wellness Check"
@@ -153,7 +157,12 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
             </div>
 
           
-            <div  onClick={() => navigate("/chat")}  className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
+           
+  <div className="bg-backg rounded-2xl shadow-md shadow-black/40 p-6 text-center transform transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-black/70 border-2 border-darkblue border-opacity-100 hover:border-opacity-40">
+
+
+
+
               <div className="w-16 h-20 mx-auto mb-4">
                  <img src={ai}  
               alt="Mental Wellness Check"
@@ -165,10 +174,12 @@ className="rounded-3xl w-20 h-16 shadow-lg"/>
               <p className="text-darkblue text-sm">
                 Chat with our AI-powered Therapist for real-time emotional support.
               </p>
-            </div>
-
+            
+</div>
         
-            <div className="bg-backg rounded-2xl shadow-md p-6 text-center transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border-2 border-darkblue hover:border-darkblue">
+             <div className="bg-backg rounded-2xl shadow-md shadow-black/40 p-6 text-center transform transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-black/70 border-2 border-darkblue border-opacity-100 hover:border-opacity-40">
+
+
               <div className="w-16 h-20 mx-auto mb-4">
                 <img src={Community}  
               alt="Mental Wellness Check"

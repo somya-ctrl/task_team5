@@ -19,15 +19,15 @@ const Profession = () => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const prof = localStorage.getItem("profession");
 
-    // Navigate to dashboard only if accessToken, user id and profession exist
+   
     if (accessToken && user?.id && prof) {
-      navigate("/dashboard");
+      navigate("/miniques");
     }
   }, [navigate]);
 
   const handleSelect = (type) => {
     localStorage.setItem("profession", type);
-    navigate("/dashboard");
+    navigate("/miniques");
   };
 
   const handleScrollToFeatures = () => {
