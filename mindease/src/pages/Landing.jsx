@@ -53,7 +53,7 @@ const handleScrollToFeatures = () => {
   className="relative inline-flex px-8 py-3 text-xl font-semibold text-black border-[3px] border-darkblue bg-transparent overflow-hidden z-[1] cursor-pointer font-inherit 
   before:content-[''] before:absolute before:left-0 before:top-0 before:w-full before:h-full before:bg-[#C54E9E] before:-translate-x-full before:transition-all before:duration-300 before:-z-[1] hover:before:translate-x-0"
 >
-  Button Text
+  Sign up
 </button>
 
 

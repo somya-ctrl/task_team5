@@ -103,11 +103,11 @@ const Register = () => {
 
   return (
     <div className="min-h-screen w-full flex bg-backg overflow-hidden">
-      <div className="hidden md:block w-1/2 h-screen p-5">
+      <div className="hidden md:block w-1/2 h-screen p-5 pt-15 ">
         <img
           src={images[currentImg]}
           alt="auth-img"
-          className="w-full h-195 object-cover transition-all duration-700"
+          className="w-full h-200 object-cover transition-all duration-700 rounded-2xl"
         />
       </div>
 

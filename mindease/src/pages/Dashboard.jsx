@@ -91,7 +91,6 @@ const loadActivity = (uid) => {
   return filtered;
 };
 
-
 const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
 
 const useDashboardData = (tasks) => {
@@ -144,7 +143,7 @@ function Gauge({ value }) {
       legend: { display: false },
       tooltip: { enabled: false },
       datalabels: {
-        color: "#000", // label color
+        color: "#000",
         font: { weight: "bold", size: 20 },
         formatter: (value, context) => context.chart.data.labels[context.dataIndex],
         anchor: "center",
@@ -234,12 +233,12 @@ function MoodPie({ items }) {
 const BigAction = ({ img, label, onClick }) => (
   <button
     onClick={onClick}
-    className="flex flex-col items-center justify-end rounded-2xl bg-blend-color ring-1 ring-darkblue-200 hover:shadow-lg transition w-full max-w-xs mx-auto h-44 sm:h-48 my-4"
+    className="flex flex-col items-center justify-end rounded-2xl bg-blend-color ring-1 ring-darkblue-200 hover:shadow-lg transition w-full max-w-2xl mx-auto h-44 sm:h-48 my-4 "
   >
-    <div className="h-16 w-16 rounded-2xl bg-aquaGlow/15 flex items-center justify-center text-2xl">
+    <div className="h-27 w-22 rounded-2xl bg-aquaGlow/15 flex items-center justify-center text-2xl">
       <img src={img} alt={label} className="h-12 w-12 object-contain" />
     </div>
-    <span className="mt-3 font-medium pb-6 text-center">{label}</span>
+    <span className="mt-3 font-semibold pb-6 text-lg text-center">{label}</span>
   </button>
 );
 
@@ -254,17 +253,32 @@ export default function Dashboard() {
   const user = getUser();
   const uid = user?.id;
   const userName = user?.name || "User";
+  const profession = (user?.profession || localStorage.getItem("profession"))?.toLowerCase();
   const navigate = useNavigate();
 
   const [score, setScore] = useState(0);
   useEffect(() => {
-    axios
-      .get("https://mindease-backend-cyvy.onrender.com/result", {
-        headers: { Authorization: "Bearer " + localStorage.getItem("accessToken") },
-      })
-      .then((res) => setScore(res.data?.result?.score ?? 0))
-      .catch(() => setScore(0));
-  }, []);
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      setScore(0);
+      return;
+    }
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    if (profession === "student") {
+      axios
+        .get("https://mindease-backend-cyvy.onrender.com/sturesult", config)
+        .then((res) => setScore(res.data?.result?.stress_score ?? 0))
+        .catch(() => setScore(0));
+    } else {
+      axios
+        .get("https://mindease-backend-cyvy.onrender.com/result", config)
+        .then((res) => setScore(res.data?.result?.score ?? 0))
+        .catch(() => setScore(0));
+    }
+  }, [profession]);
 
   const [tasks, setTasks] = useState(() => loadTasks(uid));
   useEffect(() => {
@@ -295,23 +309,22 @@ export default function Dashboard() {
   };
 
   const { goals, toggleGoal } = useDashboardData(tasks);
+  const [activity, setActivity] = useState(() => loadActivity(uid));
 
- const [activity, setActivity] = useState(() => loadActivity(uid));
+  useEffect(() => {
+    const key = ACTIVITY_KEY(uid);
+    const onStorage = (e) => {
+      if (e.key === key) setActivity(loadActivity(uid));
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [uid]);
 
-useEffect(() => {
-  const key = ACTIVITY_KEY(uid);
-  const onStorage = (e) => {
-    if (e.key === key) setActivity(loadActivity(uid));
-  };
-  window.addEventListener("storage", onStorage);
-  return () => window.removeEventListener("storage", onStorage);
-}, [uid]);
-
-useEffect(() => {
-  const onFocus = () => setActivity(loadActivity(uid));
-  window.addEventListener("focus", onFocus);
-  return () => window.removeEventListener("focus", onFocus);
-}, [uid]);
+  useEffect(() => {
+    const onFocus = () => setActivity(loadActivity(uid));
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [uid]);
 
   const doneCount = ["meditation", "journal", "mood"].filter((k) => tasks[k]).length;
   const taskPercent = Math.round((doneCount / 3) * 100);
@@ -326,7 +339,7 @@ useEffect(() => {
   const moodStreak = streak(daily, (d) => d.mood > 0);
 
   return (
-    <div className="min-h-screen bg-[#FAF5E6] text-slate-900">
+    <div className="min-h-screen bg-backg text-slate-900">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-30 space-y-8">
         <section className="space-y-2">
           <h1 className="text-2xl sm:text-3xl font-semibold">
@@ -342,7 +355,7 @@ useEffect(() => {
           </Card>
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 px-4 sm:px-6 lg:px-8">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-20 px-4 sm:px-6 lg:px-6">
           <BigAction label="Meditate" img={Meditation} onClick={() => navigate("/meditations")} />
           <BigAction label="Journal" img={Journal} onClick={() => navigate("/journal")} />
           <BigAction label="Mini Ques" img={Quiz} onClick={() => navigate("/miniques")} />
@@ -422,26 +435,25 @@ useEffect(() => {
             </ul>
           </Card>
 
-        <Card title="Recent Activity">
-  <ul className="space-y-3">
-    {activity.length === 0 && (
-      <li className="text-slate-500">No recent activity</li>
-    )}
-    {activity.slice(0, 3).map((a, idx) => (
-      <li
-        key={a.ts ?? idx}
-        className="flex items-center justify-between rounded-xl bg-[#FBF6EA] ring-1 ring-slate-200 px-4 py-3"
-      >
-        <div className="flex items-center gap-3">
-          <span className="text-lg">📝</span>
-          <p className="font-medium">{a.text}</p>
-        </div>
-        <p className="text-xs text-slate-500">{a.meta}</p>
-      </li>
-    ))}
-  </ul>
-</Card>
-
+          <Card title="Recent Activity">
+            <ul className="space-y-3">
+              {activity.length === 0 && (
+                <li className="text-slate-500">No recent activity</li>
+              )}
+              {activity.slice(0, 3).map((a, idx) => (
+                <li
+                  key={a.ts ?? idx}
+                  className="flex items-center justify-between rounded-xl bg-[#FBF6EA] ring-1 ring-slate-200 px-4 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">📝</span>
+                    <p className="font-medium">{a.text}</p>
+                  </div>
+                  <p className="text-xs text-slate-500">{a.meta}</p>
+                </li>
+              ))}
+            </ul>
+          </Card>
         </section>
 
         <section className="px-4 sm:px-6 lg:px-8">

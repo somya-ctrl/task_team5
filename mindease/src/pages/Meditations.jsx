@@ -81,19 +81,19 @@ export default function Meditations() {
   const prevVideoRef = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const uid = user?.id; // Must be present for manual login
+  const uid = user?.id; 
   const today = new Date().toISOString().slice(0, 10);
   const dailyKey = `user-${uid}-daily`;
   const navigate = useNavigate();
 
-  // Prepare for potential auth usage
+  
   const accessToken = localStorage.getItem("accessToken");
 
   const addActivity = (uid, text, meta = "") => {
     const key = `user-${uid}-activity`;
     const arr = JSON.parse(localStorage.getItem(key) || "[]");
     arr.unshift({ text, meta, ts: Date.now() });
-    if (arr.length > 20) arr.length = 20; // limit history
+    if (arr.length > 20) arr.length = 20; 
     localStorage.setItem(key, JSON.stringify(arr));
   };
 
@@ -144,7 +144,7 @@ export default function Meditations() {
     const interval = setInterval(() => {
       const diff = Date.now() - meditationStart;
       if (diff >= 10000) {
-        stopAndSave(); // This sets meditationStart to null as well
+        stopAndSave(); 
       }
     }, 2000);
     return () => clearInterval(interval);

@@ -91,18 +91,19 @@ const Profile = () => {
       <div className="absolute left-0 top-0 w-1/2 h-full bg-darkblue"></div>
       <div className="absolute right-0 top-0 w-1/2 h-full bg-lightgreen"></div>
 
-      <div className="relative z-10 w-full max-w-4xl bg-backg p-4 sm:p-10 rounded-lg shadow-xl">
-        <h1 className="text-3xl font-bold text-darkblue mb-6 text-center sm:text-left">My Profile</h1>
+      <div className="relative z-10 w-full h-200 pb-30 mb-30  max-w-4xl bg-backg  sm:p-10 rounded-lg shadow-xl">
+        <h1 className="text-3xl font-bold text-black mb-6 text-center sm:text-left">My Profile</h1>
 
-        <div className="bg-white rounded-lg p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
+        <div className="bg-white rounded-lg p-10 flex flex-col sm:flex-row justify-around  items-center gap-6">
           <div className="flex items-center gap-4">
             {profilePhoto ? (
-              <img src={profilePhoto} alt="profile" className="w-20 h-20 rounded-full object-cover" />
+              <img src={profilePhoto} alt="profile" className="w-25 h-25 rounded-full object-cover" />
             ) : (
-              <FaUser size={70} className="bg-lightgreen text-white rounded-full p-3" />
+              <FaUser size={90} className="bg-lightgreen text-white rounded-full p-3" />
             )}
-            <div className="text-center sm:text-left">
-              <h2 className="text-xl font-semibold">{profileData.fullName}</h2>
+            <div className="text-center sm:text-left leading-relaxed">
+              <h2 className="text-2xl font-semibold">{profileData.fullName}</h2>
+              
               <p className="text-gray-600 break-all">{profileData.email}</p>
             </div>
           </div>
@@ -117,9 +118,9 @@ const Profile = () => {
                   setIsEditing(true);
                 }
               }}
-              className="bg-aquaGlow text-white px-5 py-2 rounded-full flex items-center gap-2 hover:bg-lightgreen transition"
+              className="bg-aquaGlow text-white px-5 py-4 rounded-full flex items-center gap-2 hover:bg-lightgreen transition "
             >
-              {isEditing ? "Cancel" : "Edit"} <FaRegEdit size={16} />
+              {isEditing ? "Cancel" : "Edit"} <FaRegEdit size={20} />
             </button>
 
             <button
@@ -131,9 +132,10 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+        <div className="bg-white rounded-lg shadow-md p-6 py-15
+         mt-10">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <h2 className="text-2xl font-bold text-darkblue">Personal Information</h2>
+            <h2 className="text-3xl font-bold text-black mb-5">Personal Information</h2>
             {isEditing && (
               <button
                 onClick={handleSave}

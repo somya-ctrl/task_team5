@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 
+
 import Man from "../assets/man.jpg";
 import Woman from "../assets/woman.jpg";
 import Logp from "../assets/logp.jpg";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,7 +37,19 @@ const Login = () => {
       return;
     }
 
+    // Password validation regexes
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (!uppercaseRegex.test(formData.password)) {
+      setError("Password must contain at least one uppercase letter.");
+      return;
+    }
+    if (!lowercaseRegex.test(formData.password)) {
+      setError("Password must contain at least one lowercase letter.");
+      return;
+    }
     if (!specialCharRegex.test(formData.password)) {
       setError("Password must contain at least one special character.");
       return;
@@ -53,10 +67,8 @@ const Login = () => {
         formData
       );
 
-      // Extract tokens and user from response based on your structure
       const { accessToken, refreshToken, user } = res.data;
 
-      // Clear specific old keys from localStorage
       Object.keys(localStorage).forEach((k) => {
         if (
           k.startsWith("user-null") ||
@@ -72,7 +84,6 @@ const Login = () => {
         }
       });
 
-      // Save tokens and user information
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(user));
@@ -91,11 +102,11 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full flex bg-backg overflow-hidden">
-      <div className="hidden md:block w-1/2 h-screen p-5">
+      <div className="hidden md:block w-1/2 h-screen p-5 pt-15 ">
         <img
           src={images[currentImg]}
           alt="auth-img"
-          className="w-full h-195 object-cover transition-all duration-700"
+          className="w-full h-200 object-cover transition-all duration-700 rounded-2xl"
         />
       </div>
 
