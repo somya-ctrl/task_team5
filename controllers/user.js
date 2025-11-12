@@ -54,17 +54,32 @@ async function login (req,res){
       token: refreshToken,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 
     });
+     const requireProfession = !user.profession || user.profession.trim() === "";
 
     res.status(200).json({
       message: "Login successful",
       accessToken,
       refreshToken,
-      user: { id: user._id, name: user.name, email: user.email },
+      requireProfession, 
+      user: { id: user._id, name: user.name, email: user.email, profession: user.profession },
     });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
+async function saveProfession(req, res) {
+  try {
+    const { profession } = req.body;
+    if (!profession) {
+      return res.status(400).json({ error: "Profession is required" });
+    }
+
+    await User.findByIdAndUpdate(req.user.id, { profession });
+    res.status(200).json({ message: "Profession saved successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 const verifyToken = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
@@ -410,4 +425,4 @@ async function logout(req, res) {
   }
 }
 
-module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout , createstudentquiz,submitStudentQuiz,getStuResult };
+module.exports = { createUser, login, verifyToken, submitquiz, getQuizResult,createquiz ,createJournal,getUserJournals, editUser, refreshaccesstoken, logout , createstudentquiz,submitStudentQuiz,getStuResult ,saveProfession};

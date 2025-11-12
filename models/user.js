@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema({
   phone: {
     type: String,
     default: null
+  },
+  profession: {
+    type: String,
+    default: null
   }
 
 }, {

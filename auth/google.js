@@ -73,19 +73,9 @@ const handleGoogleCallback = async (req, res) => {
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
     const photo = data.picture || '';
 
-
-    // const frontendRedirect = `http://localhost:5173/google/callback?` +`token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&photo=${encodeURIComponent(photo)}`;
     const frontendRedirect = `http://localhost:5173/google/callback?token=${token}&id=${user._id}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&photo=${encodeURIComponent(photo)}`;
     return res.redirect(frontendRedirect);
-  //  res.json({
-  // success: true,
-  // user: {
-  //   name: user.name,
-  //   email: user.email,
-  //   photo: user.photo
-  // },
-  // token
-// });
+  
 
   } catch (error) {
     console.error('handleGoogleCallback error:', error);
