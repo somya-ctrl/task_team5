@@ -23,7 +23,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)  # ✅ Fixed: Added missing closing parenthesis
+)  #  Fixed: Added missing closing parenthesis
 
 # ------------------------------
 # Load Model, Scaler, and Columns
@@ -34,12 +34,12 @@ try:
     model = joblib.load("treatment_prediction_model.pkl")
     scaler = joblib.load("scaler.pkl")
     columns = joblib.load("columns.pkl")
-    print("✅ Model, Scaler, and Columns loaded successfully.")
+    print("Model, Scaler, and Columns loaded successfully.")
 except FileNotFoundError as e:
-    print(f"❌ Model file not found: {e}")
-    print("⚠️ Make sure .pkl files are in the same directory as main.py")
+    print(f" Model file not found: {e}")
+    print(" Make sure .pkl files are in the same directory as main.py")
 except Exception as e:
-    print(f"❌ Error loading model/scaler/columns: {e}")
+    print(f" Error loading model/scaler/columns: {e}")
 
 # ------------------------------
 # Input Schema
@@ -82,11 +82,11 @@ def mental_health_score(prob: float) -> str:
     """
     score = int(prob * 100)
     if score < 40:
-        return f"Score: {score} — You seem mentally healthy 🙂"
+        return f"Score: {score} — You seem mentally healthy"
     elif score < 70:
-        return f"Score: {score} — Moderate stress, stay mindful 🧠"
+        return f"Score: {score} — Moderate stress, stay mindful "
     else:
-        return f"Score: {score} — High stress, consider seeking support 💬"
+        return f"Score: {score} — High stress, consider seeking support"
 
 # ------------------------------
 # Health Check Endpoint
@@ -123,7 +123,7 @@ def home():
             "documentation": "/docs",
             "health_check": "/health"
         }
-    }  # ✅ Fixed: Added missing closing brace
+    }  #  Fixed: Added missing closing brace
 
 # ------------------------------
 # Prediction Endpoint
@@ -164,7 +164,7 @@ def predict(data: InputData):
         pred = int(model.predict(df_scaled)[0])
         
         # Interpret result
-        result = "Yes, treatment likely needed ❤️" if pred == 1 else "No, treatment may not be needed 🙂"
+        result = "Yes, treatment likely needed" if pred == 1 else "No, treatment may not be needed"
         score_text = mental_health_score(prob)
         
         return {
@@ -177,7 +177,7 @@ def predict(data: InputData):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"❌ Prediction error: {str(e)}")  # Log to Render console
+        print(f" Prediction error: {str(e)}")  # Log to Render console
         raise HTTPException(
             status_code=500,
             detail=f"Prediction failed: {str(e)}"
