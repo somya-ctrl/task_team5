@@ -70,15 +70,33 @@ async function login (req,res){
 async function saveProfession(req, res) {
   try {
     const { profession } = req.body;
-    if (!profession) {
+
+    if (!profession || profession.trim() === "") {
       return res.status(400).json({ error: "Profession is required" });
     }
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized: Missing user ID" });
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profession },
+      { new: true, runValidators: true }
+    );
 
-    await User.findByIdAndUpdate(req.user.id, { profession });
-    res.status(200).json({ message: "Profession saved successfully" });
-  } catch (error) {
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Profession saved successfully",
+      user: updatedUser,
+    });
+     } catch (error) {
+    console.error("Error saving profession:", error);
     res.status(500).json({ error: error.message });
   }
+  
 };
 const verifyToken = async (req, res, next) => {
     try {
