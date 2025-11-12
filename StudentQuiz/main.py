@@ -38,11 +38,11 @@ try:
     model = joblib.load("models/student_stress_rf_model.pkl")
     scaler = joblib.load("models/student_scaler.pkl")
     columns = joblib.load("models/student_columns.pkl")
-    print("✅ Model loaded successfully!")
-    print(f"📊 Features: {len(columns)}")
+    print("Model loaded successfully!")
+    print(f"Features: {len(columns)}")
 except FileNotFoundError as e:
-    print(f"❌ Error loading model: {e}")
-    print("⚠️  Make sure .pkl files are in 'models/' folder")
+    print(f" Error loading model: {e}")
+    print("  Make sure .pkl files are in 'models/' folder")
 
 # ============================================================================
 # INPUT SCHEMA (Quiz Answers)
@@ -240,9 +240,9 @@ def model_info():
 if __name__ == "__main__":
     import uvicorn
     print("\n" + "="*70)
-    print("🚀 STARTING STUDENT STRESS PREDICTION API")
+    print("STARTING STUDENT STRESS PREDICTION API")
     print("="*70)
-    print("📍 Local URL: http://localhost:8000")
+    print(" Local URL: http://localhost:8000")
     print("📖 Docs: http://localhost:8000/docs")
     print("="*70 + "\n")
     
