@@ -319,33 +319,65 @@ async function getStuResult(req, res) {
   }
 }
 
-
-
 async function createJournal(req, res) {
   try {
-    const { content,date } = req.body;
+    const { content, date } = req.body;
+    const userId = req.user.id;
 
     if (!content) {
       return res.status(400).json({ error: 'Content is required' });
     }
-    let parsedDate = new Date(date);
-    if (!date || isNaN(parsedDate)) {
-      parsedDate = new Date();
-    }
-
-    const journal = new Journal({
-      user: req.user.id,  
-      content,
-      date: parsedDate,
+    let journalDate = date ? new Date(date) : new Date();
+    journalDate.setHours(0, 0, 0, 0);
+    const existingJournal = await Journal.findOne({
+      user: userId,
+      date: {
+        $gte: journalDate,
+        $lt: new Date(journalDate.getTime() + 24 * 60 * 60 * 1000),
+      },
     });
 
-    await journal.save();
-    res.status(201).json({ success: true, journal });
+    if (existingJournal) {
+    
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (journalDate.getTime() !== today.getTime()) {
+        return res.status(403).json({
+          success: false,
+          message: "You cannot edit journals from previous days.",
+        });
+      }
+
+      existingJournal.content = content;
+      await existingJournal.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Today's journal updated successfully",
+        journal: existingJournal,
+      });
+    }
+
+    const newJournal = new Journal({
+      user: userId,
+      content,
+      date: journalDate,
+    });
+
+    await newJournal.save();
+    res.status(201).json({
+      success: true,
+      message: "Journal saved successfully",
+      journal: newJournal,
+    });
+
   } catch (error) {
-    console.error('Error creating journal:', error.message);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Error creating journal:", error.message);
+    res.status(500).json({ error: "Server error" });
   }
-};
+}
+
 async function getUserJournals(req, res) {
   try {
     const { date } = req.query; 
