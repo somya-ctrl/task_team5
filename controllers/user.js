@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const RefreshToken = require('../models/refreshToken');
 const crypto = require('crypto');
 const axios = require("axios");
-let lastResult = null;
+
 
 const User = require('../models/user');
 const Quiz = require('../models/quiz');
@@ -11,7 +11,6 @@ const studentquiz = require('../models/studentquiz');
 const questions = require('../questions/ques');
 
 const jwt = require('jsonwebtoken');
-const admin = require("firebase-admin");
 const { questionnew } = require('../questions/studentques');
 async function createUser(req, res) {
    
