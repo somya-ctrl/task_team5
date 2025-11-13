@@ -19,8 +19,29 @@ async function createUser(req, res) {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(user.password, saltRounds);
         user.password = hashedPassword;
+         const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || "15m" } 
+    );
+
+    
+    const refreshToken = crypto.randomBytes(64).toString("hex");
+
+  
+    await RefreshToken.create({
+      user: user._id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 
+    });
         await user.save();
-        res.status(201).json(user);
+        res.status(201).json({
+           message: "signup successful",
+           accessToken,
+           refreshToken,
+           user
+        });
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
