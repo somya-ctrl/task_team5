@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const { connectmongoDB } = require("./connect");
 const userRoutes = require("./routes/user");
 const { getGoogleAuthURL, handleGoogleCallback } = require("./auth/google");
+const { startCronJobs } = require("./cron");
 
 const app = express();
 
@@ -50,5 +51,7 @@ app.get("/auth/verify", (req, res) => {
 const PORT = process.env.PORT || 3000;
 connectmongoDB(process.env.MONGO_URI);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
- 
+// Start Cron Jobs
+startCronJobs();
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
