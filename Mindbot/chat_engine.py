@@ -17,7 +17,7 @@ client = Groq(api_key=API_KEY)
 _session_store: Dict[str, List[Dict[str, str]]] = {}
 
 # Solid default chat model (fast + good quality)
-DEFAULT_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+DEFAULT_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 SYSTEM_PROMPT = (
     "You are MindBot, a kind, non-clinical mental-health companion. "
