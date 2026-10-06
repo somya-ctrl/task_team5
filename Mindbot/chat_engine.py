@@ -8,7 +8,7 @@ load_dotenv()
 
 API_KEY = os.getenv("GROQ_API_KEY")
 if not API_KEY:
-    raise ValueError("❌ GROQ_API_KEY missing in .env")
+    raise ValueError("GROQ_API_KEY missing in .env")
 
 # Groq official SDK client
 client = Groq(api_key=API_KEY)
@@ -17,7 +17,7 @@ client = Groq(api_key=API_KEY)
 _session_store: Dict[str, List[Dict[str, str]]] = {}
 
 # Solid default chat model (fast + good quality)
-DEFAULT_MODEL = "llama-3.1-8b-instant"
+DEFAULT_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 SYSTEM_PROMPT = (
     "You are MindBot, a kind, non-clinical mental-health companion. "
@@ -25,9 +25,9 @@ SYSTEM_PROMPT = (
     "Encourage seeking professional help when appropriate."
 )
 
-# ADDED
+# ADDED — removed emojis
 GREETING = (
-    "Hey! I’m MindBot 💙 How’s your day going? "
+    "Hey! I’m MindBot. How’s your day going? "
     "I’m here to listen—share anything that’s on your mind."
 )
 
@@ -55,7 +55,7 @@ def get_response(session_id: str, user_query: str) -> str:
     _session_store[session_id].append({"role": "assistant", "content": answer})
     return answer
 
-# ADDED
+# ADDED — removed emojis
 def start_session(session_id: str) -> str:
     if session_id not in _session_store:
         _session_store[session_id] = [{"role": "system", "content": SYSTEM_PROMPT}]

@@ -11,7 +11,7 @@ if not API_KEY:
     raise ValueError("❌ GROQ_API_KEY missing in .env")
 
 client = Groq(api_key=API_KEY)
-MODEL = "llama-3.1-8b-instant"
+MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 def _read_txt(path: str) -> str:
     with open(path, "r", encoding="utf-8", errors="ignore") as f:
